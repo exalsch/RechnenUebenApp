@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Mathe Lern App</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Mathe Lern App</h1>
+        <div id="settings">
+            <label for="operation">Wähle die Art der Aufgaben:</label>
+            <select id="operation">
+                <option value="addition">Addition (ohne Übertrag)</option>
+                <option value="addition-carry">Addition (mit Übertrag)</option>
+                <option value="addition-tens">Addition (Zehner+Zahl)</option>
+                <option value="subtraktion">Subtraktion (ohne Übertrag)</option>
+                <option value="subtraktion-carry">Subtraktion (mit Übertrag)</option>
+                <option value="multiplikation">Multiplikation</option>
+                <option value="division">Division</option>
+            </select>
+            <label for="maxResult">Maximale Ergebniszahl:</label>
+            <select id="maxResult">
+                <option value="10">bis 10</option>
+                <option value="20">bis 20</option>
+                <option value="50">bis 50</option>
+                <option value="80">bis 80</option>
+                <option value="100">bis 100</option>
+            </select>
+            <button id="start-button">Start</button>
+            <button id="clear-highscore" class="danger-button">Highscore Liste löschen</button>
+        </div>
+        <div id="game" class="hidden">
+            <div id="question"></div>
+            <input type="number" id="answer" placeholder="Deine Antwort">
+            <button id="submit-answer">Antwort einreichen</button>
+            <button id="skip-question">Überspringen (-1 Punkt)</button>
+            <button id="end-game">Spiel beenden</button>
+            <div id="score">Punkte: 0</div>
+            <div id="timer">Zeit: 5:00</div>
+        </div>
+        <div id="result" class="hidden">
+            <h2>Ergebnis</h2>
+            <img id="result-gif" alt="Zufälliges Ende GIF">
+            <div id="final-score"></div>
+            <button id="restart-button">Neu starten</button>
+        </div>
+        <div id="score-list"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

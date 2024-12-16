@@ -1,0 +1,128 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    text-align: center;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 600px;
+}
+
+#settings, #game, #result {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.hidden {
+    display: none;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#end-game {
+    background-color: #ff4444;
+}
+
+#end-game:hover {
+    background-color: #cc0000;
+}
+
+#skip-question {
+    background-color: #ff9800;
+}
+
+#skip-question:hover {
+    background-color: #f57c00;
+}
+
+#question {
+    font-size: 24px;
+    margin: 20px 0;
+}
+
+#timer {
+    font-size: 20px;
+    color: red;
+}
+
+input, select {
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#score-list {
+    margin-top: 20px;
+    text-align: left;
+    padding: 10px;
+}
+
+#score-list p {
+    margin: 5px 0;
+    padding: 5px;
+    background-color: #f9f9f9;
+    border-radius: 3px;
+}
+
+#result-gif {
+    max-width: 200px;
+    margin: 20px auto;
+    border-radius: 10px;
+    display: block;
+}
+
+.danger-button {
+    background-color: #ff4444;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.danger-button:hover {
+    background-color: #cc0000;
+}
+
+@keyframes wrongAnswer {
+    0% {
+        background-color: white;
+    }
+    50% {
+        background-color: #ffebee;
+    }
+    100% {
+        background-color: white;
+    }
+}
+
+.wrong-answer {
+    animation: wrongAnswer 0.5s ease;
+}
