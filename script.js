@@ -39,9 +39,64 @@ answerInput.addEventListener('keypress', function(event) {
     }
 });
 
+// Operation-specific maxResult configurations
+const operationLimits = {
+    'addition': { min: 10, max: 100 },
+    'addition-carry': { min: 20, max: 100 },
+    'addition-tens': { min: 20, max: 100 },
+    'addition-simple-carry': { min: 20, max: 100 },
+    'subtraktion': { min: 10, max: 100 },
+    'subtraktion-carry': { min: 20, max: 100 },
+    'multiplikation': { min: 20, max: 100 },
+    'division': { min: 10, max: 100 }
+};
+
+// Function to update maxResult options based on selected operation
+function updateMaxResultOptions() {
+    const operation = document.getElementById('operation').value;
+    const maxResultSelect = document.getElementById('maxResult');
+    const currentValue = parseInt(maxResultSelect.value);
+    const limits = operationLimits[operation];
+
+    // Clear existing options
+    maxResultSelect.innerHTML = '';
+
+    // Add appropriate options based on operation limits
+    const possibleValues = [10, 20, 50, 80, 100];
+    possibleValues.forEach(value => {
+        if (value >= limits.min && value <= limits.max) {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = `bis ${value}`;
+            maxResultSelect.appendChild(option);
+        }
+    });
+
+    // If current value is invalid for new operation, select the first valid option
+    if (currentValue < limits.min || currentValue > limits.max) {
+        maxResultSelect.value = maxResultSelect.options[0].value;
+    } else {
+        maxResultSelect.value = currentValue;
+    }
+}
+
+// Add event listener for operation change
+document.getElementById('operation').addEventListener('change', updateMaxResultOptions);
+
+// Initialize maxResult options on page load
+document.addEventListener('DOMContentLoaded', updateMaxResultOptions);
+
 function startGame() {
     const operation = document.getElementById('operation').value;
     maxResult = parseInt(document.getElementById('maxResult').value);
+    
+    // Validate selected maxResult against operation limits
+    const limits = operationLimits[operation];
+    if (maxResult < limits.min || maxResult > limits.max) {
+        alert(`Für ${getOperationName(operation)} muss die maximale Ergebniszahl zwischen ${limits.min} und ${limits.max} liegen.`);
+        return;
+    }
+    
     score = 0;
     timeLeft = 300;
     gameDiv.classList.remove('hidden');
@@ -210,10 +265,56 @@ function endGame() {
     resultDiv.classList.remove('hidden');
     finalScoreDiv.innerText = `Dein Punktestand: ${score}`;
     
-    // Zufälliges End-GIF auswählen (Annahme: es gibt 5 GIFs von end_1.gif bis end_5.gif)
-    const randomNumber = Math.floor(Math.random() * 6) + 1;
+    const gifQueries = ["super welpe", "Gut gemacht einhorn", "applaus tiere"];
+    const TENOR_API_KEY = 'AIzaSyDXkrNEOQrYyYNVKX4X5QXeu6Cv35NP26M';
+    const TENOR_API_URL = 'https://tenor.googleapis.com/v2/search';
+    
+    function getRandomLocalGif() {
+        const randomNumber = Math.floor(Math.random() * 6) + 1;
+        return `img/end_${randomNumber}.gif`;
+    }
+
+    async function fetchRandomGif() {
+        // Select random search query
+        const randomQuery = gifQueries[Math.floor(Math.random() * gifQueries.length)];
+        
+        try {
+            const response = await fetch(
+                `${TENOR_API_URL}?q=${encodeURIComponent(randomQuery)}&key=${TENOR_API_KEY}&client_key=mathe_lern_app&limit=10&contentfilter=high`
+            );
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+            
+            if (data.results && data.results.length > 0) {
+                // Get random GIF from results
+                const randomIndex = Math.floor(Math.random() * data.results.length);
+                return data.results[randomIndex].media_formats.gif.url;
+            } else {
+                throw new Error('No GIFs found');
+            }
+        } catch (error) {
+            console.error('Error fetching GIF:', error);
+            // Return local fallback GIF
+            return getRandomLocalGif();
+        }
+    }
+
     const resultGif = document.getElementById('result-gif');
-    resultGif.src = `img/end_${randomNumber}.gif`;
+    resultGif.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Empty GIF while loading
+    
+    // Fetch and display random GIF
+    fetchRandomGif().then(gifUrl => {
+        if (gifUrl) {
+            resultGif.src = gifUrl;
+        } else {
+            // Use fallback if both Tenor and local GIF failed
+            resultGif.src = getRandomLocalGif();
+        }
+    });
     
     saveScore();
     displayScores();
