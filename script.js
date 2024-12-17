@@ -88,6 +88,16 @@ function generateQuestion(operation) {
                 num2 = minNum2 + Math.floor(Math.random() * (maxNum2 - minNum2 + 1));
                 correctAnswer = num1 + num2;
                 break;
+            case 'addition-simple-carry':
+                // Addition mit einfachem Übertrag (zweite Zahl einstellig)
+                num2 = Math.floor(Math.random() * 8) + 1; // Zweite Zahl (1-8)
+                let firstDigit;
+                do {
+                    firstDigit = Math.floor(Math.random() * (9 - num2)) + (num2 + 1); // Einerstelle größer als num2
+                    num1 = Math.floor(Math.random() * Math.floor((maxResult - num2) / 10)) * 10 + firstDigit;
+                } while (num1 === 0 || num1 + num2 > maxResult);
+                correctAnswer = num1 + num2;
+                break;
             case 'addition-carry':
                 // Addition mit Übertrag
                 num1 = Math.floor(Math.random() * (maxResult / 2));
@@ -135,6 +145,7 @@ function generateQuestion(operation) {
     let operationSymbol = {
         'addition': '+',
         'addition-tens': '+',
+        'addition-simple-carry': '+',
         'addition-carry': '+',
         'subtraktion': '-',
         'subtraktion-carry': '-',
@@ -163,41 +174,27 @@ function hasCarry(num1, num2) {
 }
 
 function checkAnswer() {
-    if (isProcessingAnswer) return;
+    isProcessingAnswer = true;
+    const userAnswer = parseInt(answerInput.value);
     
-    try {
-        isProcessingAnswer = true;
-        const userAnswer = parseInt(answerInput.value);
-        
-        if (isNaN(userAnswer)) {
-            alert('Bitte gib eine Zahl ein!');
+    if (userAnswer === correctAnswer) {
+        score++;
+        scoreDiv.innerText = `Punkte: ${score}`;
+        answerInput.classList.add('correct-answer');
+        setTimeout(() => {
+            answerInput.classList.remove('correct-answer');
             answerInput.value = '';
-            answerInput.focus();
-            return;
-        }
-
-        if (userAnswer === correctAnswer) {
-            score++;
-            scoreDiv.innerText = `Punkte: ${score}`;
             const operation = document.getElementById('operation').value;
             generateQuestion(operation);
-        } else {
-            score = Math.max(0, score - 1);
-            scoreDiv.innerText = `Punkte: ${score}`;
+            isProcessingAnswer = false;
+        }, 1000);
+    } else {
+        answerInput.classList.add('wrong-answer');
+        setTimeout(() => {
+            answerInput.classList.remove('wrong-answer');
             answerInput.value = '';
-            // Add wrong answer animation
-            answerInput.classList.add('wrong-answer');
-            setTimeout(() => {
-                answerInput.classList.remove('wrong-answer');
-            }, 500);
-            answerInput.focus();
-        }
-    } catch (error) {
-        console.error('Fehler beim Prüfen der Antwort:', error);
-        alert('Es ist ein Fehler aufgetreten. Das Spiel wird neu gestartet.');
-        restartGame();
-    } finally {
-        isProcessingAnswer = false;
+            isProcessingAnswer = false;
+        }, 500);
     }
 }
 
@@ -261,6 +258,7 @@ function getOperationName(operation) {
     const names = {
         'addition': 'Addition (ohne Übertrag)',
         'addition-tens': 'Addition (Zehner+Zahl)',
+        'addition-simple-carry': 'Addition (einfacher Übertrag)',
         'addition-carry': 'Addition (mit Übertrag)',
         'subtraktion': 'Subtraktion (ohne Übertrag)',
         'subtraktion-carry': 'Subtraktion (mit Übertrag)',
