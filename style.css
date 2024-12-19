@@ -136,3 +136,63 @@ label {
 .correct-answer {
     animation: correctAnswer 0.5s;
 }
+
+.gallery-button {
+    background-color: #4CAF50;
+    color: white;
+    margin-top: 10px;
+}
+
+.heart-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    transition: transform 0.2s;
+}
+
+.heart-button:hover {
+    transform: scale(1.2);
+}
+
+.heart-button.saved {
+    color: red;
+}
+
+#gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.gallery-item {
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.gallery-item .remove-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 0, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+#gallery.hidden {
+    display: none;
+}

@@ -19,6 +19,8 @@ const finalScoreDiv = document.getElementById('final-score');
 const restartButton = document.getElementById('restart-button');
 const settings = document.getElementById('settings');
 const clearHighscoreButton = document.getElementById('clear-highscore');
+const galleryButton = document.getElementById('gallery-button');
+const saveGifButton = document.getElementById('save-gif');
 
 startButton.addEventListener('click', startGame);
 submitButton.addEventListener('click', () => {
@@ -30,6 +32,8 @@ skipButton.addEventListener('click', skipQuestion);
 endGameButton.addEventListener('click', endGame);
 restartButton.addEventListener('click', restartGame);
 clearHighscoreButton.addEventListener('click', clearHighscores);
+galleryButton.addEventListener('click', showGallery);
+saveGifButton.addEventListener('click', saveGif);
 
 // Event-Listener für die Enter-Taste
 answerInput.addEventListener('keypress', function(event) {
@@ -394,4 +398,69 @@ function restartGame() {
     
     // Update scores for the current operation
     displayScores();
+}
+
+// Galerie-Funktionalität
+let savedGifs = JSON.parse(localStorage.getItem('savedGifs') || '[]');
+
+function saveGif() {
+    const currentGif = document.getElementById('result-gif').src;
+    if (!savedGifs.includes(currentGif)) {
+        savedGifs.push(currentGif);
+        localStorage.setItem('savedGifs', JSON.stringify(savedGifs));
+        saveGifButton.classList.add('saved');
+    }
+}
+
+function removeGif(gifUrl) {
+    savedGifs = savedGifs.filter(gif => gif !== gifUrl);
+    localStorage.setItem('savedGifs', JSON.stringify(savedGifs));
+    showGallery(); // Aktualisiere die Galerie-Ansicht
+}
+
+function showGallery() {
+    settings.classList.add('hidden');
+    gameDiv.classList.add('hidden');
+    resultDiv.classList.add('hidden');
+    
+    // Erstelle oder aktualisiere das Galerie-Element
+    let galleryDiv = document.getElementById('gallery');
+    if (!galleryDiv) {
+        galleryDiv = document.createElement('div');
+        galleryDiv.id = 'gallery';
+        document.querySelector('.container').appendChild(galleryDiv);
+    }
+    
+    // Lösche bisherigen Inhalt
+    galleryDiv.innerHTML = '';
+    
+    // Füge Zurück-Button hinzu
+    const backButton = document.createElement('button');
+    backButton.textContent = 'Zurück zum Hauptmenü';
+    backButton.onclick = () => {
+        galleryDiv.classList.add('hidden');
+        settings.classList.remove('hidden');
+    };
+    galleryDiv.appendChild(backButton);
+    
+    // Zeige gespeicherte GIFs an
+    savedGifs.forEach(gifUrl => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        
+        const img = document.createElement('img');
+        img.src = gifUrl;
+        img.alt = 'Gespeichertes GIF';
+        
+        const removeButton = document.createElement('button');
+        removeButton.className = 'remove-button';
+        removeButton.innerHTML = '×';
+        removeButton.onclick = () => removeGif(gifUrl);
+        
+        item.appendChild(img);
+        item.appendChild(removeButton);
+        galleryDiv.appendChild(item);
+    });
+    
+    galleryDiv.classList.remove('hidden');
 }
