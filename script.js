@@ -481,3 +481,108 @@ function showGallery() {
     
     galleryDiv.classList.remove('hidden');
 }
+
+// Zeichenfunktionalität
+const canvas = document.getElementById('drawing-canvas');
+const ctx = canvas.getContext('2d');
+const toggleDrawingBtn = document.getElementById('toggle-drawing');
+const clearDrawingBtn = document.getElementById('clear-drawing');
+const colorPicker = document.getElementById('color-picker');
+const lineWidth = document.getElementById('line-width');
+const drawingControls = document.getElementById('drawing-controls');
+
+let isDrawing = false;
+let isDrawingEnabled = false;
+let lastX = 0;
+let lastY = 0;
+
+// Canvas-Größe an Container anpassen
+function resizeCanvas() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = 300;
+}
+
+// Initial und bei Größenänderung Canvas anpassen
+window.addEventListener('load', resizeCanvas);
+window.addEventListener('resize', resizeCanvas);
+
+function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+    };
+}
+
+function getTouchPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top
+    };
+}
+
+function startDrawing(e) {
+    e.preventDefault();
+    if (!isDrawingEnabled) return;
+    
+    isDrawing = true;
+    const pos = e.type === 'mousedown' ? getMousePos(e) : getTouchPos(e);
+    lastX = pos.x;
+    lastY = pos.y;
+}
+
+function draw(e) {
+    e.preventDefault();
+    if (!isDrawing || !isDrawingEnabled) return;
+
+    const pos = e.type === 'mousemove' ? getMousePos(e) : getTouchPos(e);
+    
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.strokeStyle = colorPicker.value;
+    ctx.lineWidth = lineWidth.value;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    lastX = pos.x;
+    lastY = pos.y;
+}
+
+function stopDrawing(e) {
+    e.preventDefault();
+    isDrawing = false;
+}
+
+// Event Listener für Zeichnen
+canvas.addEventListener('mousedown', startDrawing);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDrawing);
+canvas.addEventListener('mouseleave', stopDrawing);
+
+canvas.addEventListener('touchstart', startDrawing, { passive: false });
+canvas.addEventListener('touchmove', draw, { passive: false });
+canvas.addEventListener('touchend', stopDrawing, { passive: false });
+
+// Zeichnen aktivieren/deaktivieren
+toggleDrawingBtn.addEventListener('click', () => {
+    isDrawingEnabled = !isDrawingEnabled;
+    
+    if (isDrawingEnabled) {
+        canvas.classList.remove('hidden');
+        drawingControls.classList.remove('hidden');
+        toggleDrawingBtn.textContent = 'Zeichnen Aus';
+        resizeCanvas();
+    } else {
+        canvas.classList.add('hidden');
+        drawingControls.classList.add('hidden');
+        toggleDrawingBtn.textContent = 'Zeichnen Ein';
+    }
+});
+
+// Zeichnung löschen
+clearDrawingBtn.addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
