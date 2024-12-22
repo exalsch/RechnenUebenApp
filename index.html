@@ -8,61 +8,62 @@
 </head>
 <body>
     <div class="container">
-        <h1>Mathe Lern App</h1>
-        <div id="settings">
-            <label for="operation">Wähle die Art der Aufgaben:</label>
-            <select id="operation">
-                <option value="addition">Addition (ohne Übertrag)</option>
-                <option value="addition-carry">Addition (mit Übertrag)</option>
-                <option value="addition-tens">Addition (Zehner+Zahl)</option>
-                <option value="addition-simple-carry">Addition (Übertrag einfach)</option>
-                <option value="subtraktion">Subtraktion (ohne Übertrag)</option>
-                <option value="subtraktion-carry">Subtraktion (mit Übertrag)</option>
-                <option value="multiplikation">Multiplikation</option>
-                <option value="division">Division</option>
-            </select>
-            <label for="maxResult">Maximale Ergebniszahl:</label>
-            <select id="maxResult">
-                <option value="10">bis 10</option>
-                <option value="20">bis 20</option>
-                <option value="50">bis 50</option>
-                <option value="80">bis 80</option>
-                <option value="100">bis 100</option>
-            </select>
-            <button id="start-button">Start</button>
-            <button id="clear-highscore" class="danger-button">Highscore Liste löschen</button>
-            <button id="gallery-button" class="gallery-button">Galerie</button>
-        </div>
-        <div id="game" class="hidden">
-            <div id="question"></div>
-            <div class="drawing-section">
-                <button id="toggle-drawing">Notiz Ein/Aus</button>
-                <canvas id="drawing-canvas" class="hidden"></canvas>
-                <div id="drawing-controls" class="hidden">
-                    <button id="clear-drawing">Notiz löschen</button>
-                    <div class="drawing-tools">
-                        <label for="color-picker">Farbe:</label>
-                        <input type="color" id="color-picker" value="#000000">
-                        <label for="line-width">Strichstärke:</label>
-                        <input type="range" id="line-width" min="1" max="20" value="2">
+        <canvas id="drawing-canvas"></canvas>
+        <div class="content">
+            <h1>Mathe Lern App</h1>
+            <div id="settings">
+                <label for="operation">Wähle die Art der Aufgaben:</label>
+                <select id="operation">
+                    <option value="addition">Addition (ohne Übertrag)</option>
+                    <option value="addition-carry">Addition (mit Übertrag)</option>
+                    <option value="addition-tens">Addition (Zehner+Zahl)</option>
+                    <option value="addition-simple-carry">Addition (Übertrag einfach)</option>
+                    <option value="subtraktion">Subtraktion (ohne Übertrag)</option>
+                    <option value="subtraktion-carry">Subtraktion (mit Übertrag)</option>
+                    <option value="multiplikation">Multiplikation</option>
+                    <option value="division">Division</option>
+                </select>
+                <label for="maxResult">Maximale Ergebniszahl:</label>
+                <select id="maxResult">
+                    <option value="10">bis 10</option>
+                    <option value="20">bis 20</option>
+                    <option value="50">bis 50</option>
+                    <option value="80">bis 80</option>
+                    <option value="100">bis 100</option>
+                </select>
+                <button id="start-button">Start</button>
+                <button id="clear-highscore" class="danger-button">Highscore Liste löschen</button>
+                <button id="gallery-button" class="gallery-button">Galerie</button>
+            </div>
+            <div id="game" class="hidden">
+                <div id="question"></div>
+                <div class="drawing-section">
+                    <div id="drawing-controls">
+                        <button id="clear-drawing">Notiz löschen</button>
+                        <div class="drawing-tools">
+                            <label for="color-picker">Farbe:</label>
+                            <input type="color" id="color-picker" value="#000000">
+                            <label for="line-width">Strichstärke:</label>
+                            <input type="range" id="line-width" min="1" max="20" value="2">
+                        </div>
                     </div>
                 </div>
+                <input type="number" id="answer" placeholder="Deine Antwort">
+                <button id="submit-answer">Antwort einreichen</button>
+                <button id="skip-question">Überspringen (-1 Punkt)</button>
+                <button id="end-game">Beenden</button>
+                <div id="score">Punkte: 0</div>
+                <div id="timer">Zeit: 5:00</div>
             </div>
-            <input type="number" id="answer" placeholder="Deine Antwort">
-            <button id="submit-answer">Antwort einreichen</button>
-            <button id="skip-question">Überspringen (-1 Punkt)</button>
-            <button id="end-game">Beenden</button>
-            <div id="score">Punkte: 0</div>
-            <div id="timer">Zeit: 5:00</div>
+            <div id="result" class="hidden">
+                <h2>Ergebnis</h2>
+                <img id="result-gif" alt="Zufälliges Ende GIF">
+                <button id="save-gif" class="heart-button">❤️</button>
+                <div id="final-score"></div>
+                <button id="restart-button">Neu starten</button>
+            </div>
+            <div id="score-list"></div>
         </div>
-        <div id="result" class="hidden">
-            <h2>Ergebnis</h2>
-            <img id="result-gif" alt="Zufälliges Ende GIF">
-            <button id="save-gif" class="heart-button">❤️</button>
-            <div id="final-score"></div>
-            <button id="restart-button">Neu starten</button>
-        </div>
-        <div id="score-list"></div>
     </div>
     <script src="script.js"></script>
 </body>

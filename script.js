@@ -21,6 +21,7 @@ const settings = document.getElementById('settings');
 const clearHighscoreButton = document.getElementById('clear-highscore');
 const galleryButton = document.getElementById('gallery-button');
 const saveGifButton = document.getElementById('save-gif');
+const scoreList = document.getElementById('score-list');
 
 startButton.addEventListener('click', startGame);
 submitButton.addEventListener('click', () => {
@@ -105,9 +106,13 @@ function startGame() {
     timeLeft = 300;
     gameDiv.classList.remove('hidden');
     settings.classList.add('hidden');
+    scoreList.classList.add('hidden');
     generateQuestion(operation);
     startTimer();
     displayScores(); // Update scores for the selected operation
+    isGameRunning = true;
+    canvas.classList.add('game-active');
+    drawingControls.classList.add('game-active');
 }
 
 function startTimer() {
@@ -215,6 +220,7 @@ function generateQuestion(operation) {
     questionDiv.innerText = `${num1} ${operationSymbol} ${num2}`;
     answerInput.value = '';
     answerInput.focus();
+    clearCanvas(); // Notiz löschen
 }
 
 function hasCarry(num1, num2) {
@@ -261,12 +267,14 @@ function skipQuestion() {
     score = Math.max(0, score - 1); // Verhindere negative Punktzahl
     scoreDiv.innerText = `Punkte: ${score}`;
     generateQuestion(document.getElementById('operation').value);
+    clearCanvas(); // Notiz löschen
 }
 
 function endGame() {
     clearInterval(timer);
     gameDiv.classList.add('hidden');
     resultDiv.classList.remove('hidden');
+    scoreList.classList.remove('hidden');
     finalScoreDiv.innerText = `Dein Punktestand: ${score}`;
     
     const resultGif = document.getElementById('result-gif');
@@ -339,6 +347,10 @@ function endGame() {
     // Save and display scores
     saveScore();
     displayScores();
+    isGameRunning = false;
+    canvas.classList.remove('game-active');
+    drawingControls.classList.remove('game-active');
+    clearCanvas(); // Notiz löschen
 }
 
 function saveScore() {
@@ -358,11 +370,11 @@ function displayScores() {
     const currentOperation = document.getElementById('operation').value;
     const scores = JSON.parse(localStorage.getItem('scores') || '[]');
     const filteredScores = scores.filter(score => score.operation === currentOperation);
-    const scoreList = document.getElementById('score-list');
-    scoreList.innerHTML = '<h2>Highscores - ' + getOperationName(currentOperation) + '</h2>';
+    const scoreListDiv = document.getElementById('score-list');
+    scoreListDiv.innerHTML = '<h2>Highscores - ' + getOperationName(currentOperation) + '</h2>';
     
     if (filteredScores.length === 0) {
-        scoreList.innerHTML += '<p>Noch keine Highscores für diese Rechenart.</p>';
+        scoreListDiv.innerHTML += '<p>Noch keine Highscores für diese Rechenart.</p>';
         return;
     }
 
@@ -373,7 +385,7 @@ function displayScores() {
         li.textContent = `${score.score} Punkte (Max: ${score.maxResult}) - ${date}`;
         list.appendChild(li);
     });
-    scoreList.appendChild(list);
+    scoreListDiv.appendChild(list);
 }
 
 function getOperationName(operation) {
@@ -406,6 +418,7 @@ function restartGame() {
     // Reset UI
     gameDiv.classList.add('hidden');
     resultDiv.classList.add('hidden');
+    scoreList.classList.add('hidden');
     settings.classList.remove('hidden');
     
     // Reset input and score display
@@ -415,6 +428,7 @@ function restartGame() {
     
     // Update scores for the current operation
     displayScores();
+    clearCanvas(); // Notiz löschen
 }
 
 // Galerie-Funktionalität
@@ -439,6 +453,7 @@ function showGallery() {
     settings.classList.add('hidden');
     gameDiv.classList.add('hidden');
     resultDiv.classList.add('hidden');
+    scoreList.classList.add('hidden');
     
     // Erstelle oder aktualisiere das Galerie-Element
     let galleryDiv = document.getElementById('gallery');
@@ -485,26 +500,33 @@ function showGallery() {
 // Zeichenfunktionalität
 const canvas = document.getElementById('drawing-canvas');
 const ctx = canvas.getContext('2d');
-const toggleDrawingBtn = document.getElementById('toggle-drawing');
 const clearDrawingBtn = document.getElementById('clear-drawing');
 const colorPicker = document.getElementById('color-picker');
 const lineWidth = document.getElementById('line-width');
 const drawingControls = document.getElementById('drawing-controls');
 
 let isDrawing = false;
-let isDrawingEnabled = false;
 let lastX = 0;
 let lastY = 0;
+let isGameRunning = false;
+
+// Funktion zum Löschen der Notiz
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
 
 // Canvas-Größe an Container anpassen
 function resizeCanvas() {
-    const rect = canvas.parentElement.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = 300;
+    const container = canvas.parentElement;
+    canvas.width = container.offsetWidth;
+    canvas.height = container.offsetHeight;
 }
 
 // Initial und bei Größenänderung Canvas anpassen
-window.addEventListener('load', resizeCanvas);
+window.addEventListener('load', () => {
+    resizeCanvas();
+    setTimeout(resizeCanvas, 100);
+});
 window.addEventListener('resize', resizeCanvas);
 
 function getMousePos(e) {
@@ -524,9 +546,8 @@ function getTouchPos(e) {
 }
 
 function startDrawing(e) {
+    if (!isGameRunning) return;
     e.preventDefault();
-    if (!isDrawingEnabled) return;
-    
     isDrawing = true;
     const pos = e.type === 'mousedown' ? getMousePos(e) : getTouchPos(e);
     lastX = pos.x;
@@ -534,8 +555,9 @@ function startDrawing(e) {
 }
 
 function draw(e) {
+    if (!isGameRunning) return;
     e.preventDefault();
-    if (!isDrawing || !isDrawingEnabled) return;
+    if (!isDrawing) return;
 
     const pos = e.type === 'mousemove' ? getMousePos(e) : getTouchPos(e);
     
@@ -552,6 +574,7 @@ function draw(e) {
 }
 
 function stopDrawing(e) {
+    if (!isGameRunning) return;
     e.preventDefault();
     isDrawing = false;
 }
@@ -566,23 +589,5 @@ canvas.addEventListener('touchstart', startDrawing, { passive: false });
 canvas.addEventListener('touchmove', draw, { passive: false });
 canvas.addEventListener('touchend', stopDrawing, { passive: false });
 
-// Zeichnen aktivieren/deaktivieren
-toggleDrawingBtn.addEventListener('click', () => {
-    isDrawingEnabled = !isDrawingEnabled;
-    
-    if (isDrawingEnabled) {
-        canvas.classList.remove('hidden');
-        drawingControls.classList.remove('hidden');
-        toggleDrawingBtn.textContent = 'Zeichnen Aus';
-        resizeCanvas();
-    } else {
-        canvas.classList.add('hidden');
-        drawingControls.classList.add('hidden');
-        toggleDrawingBtn.textContent = 'Zeichnen Ein';
-    }
-});
-
 // Zeichnung löschen
-clearDrawingBtn.addEventListener('click', () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
+clearDrawingBtn.addEventListener('click', clearCanvas);
