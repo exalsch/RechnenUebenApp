@@ -287,17 +287,17 @@ function endGame() {
         resultGif.style.display = 'block';
         resultGif.style.textAlign = 'center';
         resultGif.src = '';
-        resultGif.alt = '😕';
+        resultGif.alt = 'Schade';
         resultGif.innerText = '😕';
         saveGifButton.style.display = 'none'; // Verstecke den Speichern-Button
     } else {
         // Normales Spielende - zeige GIF
-        const gifQueries = ["super welpe", "Gut gemacht einhorn", "applaus tiere"];
+        const gifQueries = ["welpe", "cute unicorn", "niedliche tiere", "funny pets", "cute horse", "cute dog"];
         const TENOR_API_KEY = 'AIzaSyDXkrNEOQrYyYNVKX4X5QXeu6Cv35NP26M';
         const TENOR_API_URL = 'https://tenor.googleapis.com/v2/search';
         
         function getRandomLocalGif() {
-            const randomNumber = Math.floor(Math.random() * 6) + 1;
+            const randomNumber = Math.floor(Math.random() * 11) + 1;
             return `img/end_${randomNumber}.gif`;
         }
 
@@ -513,6 +513,7 @@ let isGameRunning = false;
 // Funktion zum Löschen der Notiz
 function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    answerInput.focus(); // Fokus auf das Eingabefeld setzen
 }
 
 // Canvas-Größe an Container anpassen
