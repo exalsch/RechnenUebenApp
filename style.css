@@ -66,6 +66,28 @@ button:hover {
     color: red;
 }
 
+#timer-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+#progress-bar {
+    width: 100px;
+    height: 15px;
+    background-color: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#progress {
+    width: 100%;
+    height: 100%;
+    background-color: #007bff;
+    transition: width 1s linear;
+}
+
 input, select {
     padding: 10px;
     margin: 10px;
@@ -268,4 +290,18 @@ label {
 
 .drawing-controls button:hover {
     background-color: #45a049;
+}
+
+.sound-button {
+    font-size: 1.2em;
+    padding: 5px 10px;
+    cursor: pointer;
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+
+.sound-button:hover {
+    background-color: #f0f0f0;
 }

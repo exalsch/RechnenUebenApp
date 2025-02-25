@@ -1,3 +1,21 @@
+// Sound-Effekte
+const correctSound = new Audio('sounds/correct.mp3');
+const wrongSound = new Audio('sounds/wrong.mp3');
+let isSoundEnabled = true;
+
+// Sound-Toggle Funktionalität
+const soundToggleBtn = document.getElementById('sound-toggle');
+soundToggleBtn.addEventListener('click', () => {
+    isSoundEnabled = !isSoundEnabled;
+    soundToggleBtn.textContent = isSoundEnabled ? '🔔' : '🔕';
+});
+
+function playSound(sound) {
+    if (isSoundEnabled) {
+        sound.play();
+    }
+}
+
 let score = 0;
 let timeLeft = 300;
 let timer;
@@ -50,7 +68,10 @@ const operationLimits = {
     'addition-carry': { min: 20, max: 100 },
     'addition-tens': { min: 20, max: 100 },
     'addition-simple-carry': { min: 20, max: 100 },
+    'mixed-simple': { min: 20, max: 100 },
+    'mixed-carry': { min: 20, max: 100 },
     'subtraktion': { min: 10, max: 100 },
+    'subtraktion-simple-carry': { min: 20, max: 100 },
     'subtraktion-carry': { min: 20, max: 100 },
     'multiplikation': { min: 20, max: 100 },
     'division': { min: 10, max: 100 }
@@ -116,9 +137,20 @@ function startGame() {
 }
 
 function startTimer() {
+    const totalTime = 300; // Gesamtzeit in Sekunden
+    timeLeft = totalTime;
+    const progressBar = document.getElementById('progress');
+    
     timer = setInterval(() => {
         timeLeft--;
-        timerDiv.innerText = `Zeit: ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerDiv.innerText = `Zeit: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+        // Aktualisiere den Fortschrittsbalken
+        const progressPercent = (timeLeft / totalTime) * 100;
+        progressBar.style.width = `${progressPercent}%`;
+        
         if (timeLeft <= 0) {
             clearInterval(timer);
             endGame();
@@ -127,7 +159,17 @@ function startTimer() {
 }
 
 function generateQuestion(operation) {
-    let num1, num2;
+    let num1, num2, operator;
+    maxResult = parseInt(document.getElementById('maxResult').value);
+
+    if (operation === 'mixed-simple' || operation === 'mixed-carry') {
+        // Zufällig zwischen Addition und Subtraktion wählen
+        const isAddition = Math.random() < 0.5;
+        operation = isAddition ? 
+            (operation === 'mixed-simple' ? 'addition-simple-carry' : 'addition-carry') :
+            (operation === 'mixed-simple' ? 'subtraktion-simple-carry' : 'subtraktion-carry');
+    }
+
     let attempts = 0;
     const maxAttempts = 50;
 
@@ -176,6 +218,16 @@ function generateQuestion(operation) {
                 if (hasCarry(num1, num2)) continue; // Übertrag gefunden, neue Zahlen generieren
                 correctAnswer = num1 - num2;
                 break;
+            case 'subtraktion-simple-carry':
+                // Subtraktion mit einfachem Übertrag (zweite Zahl einstellig)
+                num2 = Math.floor(Math.random() * 9) + 1; // Zweite Zahl (1-9)
+                let firstDigitSub;
+                do {
+                    firstDigitSub = Math.floor(Math.random() * 9); // Einerstelle der ersten Zahl
+                    num1 = Math.floor(Math.random() * Math.floor(maxResult / 10)) * 10 + firstDigitSub;
+                } while (num1 <= num2 || num1 === 0 || !hasCarry(num1, num2));
+                correctAnswer = num1 - num2;
+                break;
             case 'subtraktion-carry':
                 // Subtraktion mit Übertrag
                 num1 = Math.floor(Math.random() * maxResult);
@@ -212,6 +264,7 @@ function generateQuestion(operation) {
         'addition-simple-carry': '+',
         'addition-carry': '+',
         'subtraktion': '-',
+        'subtraktion-simple-carry': '-',
         'subtraktion-carry': '-',
         'multiplikation': '*',
         'division': '/'
@@ -243,6 +296,7 @@ function checkAnswer() {
     const userAnswer = parseInt(answerInput.value);
     
     if (userAnswer === correctAnswer) {
+        playSound(correctSound);
         score++;
         scoreDiv.innerText = `Punkte: ${score}`;
         answerInput.classList.add('correct-answer');
@@ -254,6 +308,7 @@ function checkAnswer() {
             isProcessingAnswer = false;
         }, 1000);
     } else {
+        playSound(wrongSound);
         answerInput.classList.add('wrong-answer');
         setTimeout(() => {
             answerInput.classList.remove('wrong-answer');
@@ -292,7 +347,7 @@ function endGame() {
         saveGifButton.style.display = 'none'; // Verstecke den Speichern-Button
     } else {
         // Normales Spielende - zeige GIF
-        const gifQueries = ["welpe", "cute unicorn", "niedliche tiere", "funny pets", "cute horse", "cute dog"];
+        const gifQueries = ["welpe", , "niedliche tiere", "funny pets", "cute dog","funny sheep","Pfohlen"];
         const TENOR_API_KEY = 'AIzaSyDXkrNEOQrYyYNVKX4X5QXeu6Cv35NP26M';
         const TENOR_API_URL = 'https://tenor.googleapis.com/v2/search';
         
@@ -306,7 +361,7 @@ function endGame() {
             
             try {
                 const response = await fetch(
-                    `${TENOR_API_URL}?q=${encodeURIComponent(randomQuery)}&key=${TENOR_API_KEY}&client_key=mathe_lern_app&limit=10&contentfilter=high`
+                    `${TENOR_API_URL}?q=${encodeURIComponent(randomQuery)}&key=${TENOR_API_KEY}&client_key=mathe_lern_app&limit=30&contentfilter=high`
                 );
                 
                 if (!response.ok) {
@@ -355,51 +410,53 @@ function endGame() {
 
 function saveScore() {
     const operation = document.getElementById('operation').value;
-    let scores = JSON.parse(localStorage.getItem('scores') || '[]');
+    let scores = JSON.parse(localStorage.getItem(`scores_${operation}`) || '[]');
     scores.push({
         score: score,
-        operation: operation,
         maxResult: maxResult,
         date: new Date().toISOString()
     });
-    scores.sort((a, b) => b.score - a.score);
-    localStorage.setItem('scores', JSON.stringify(scores));
+    localStorage.setItem(`scores_${operation}`, JSON.stringify(scores));
 }
 
 function displayScores() {
-    const currentOperation = document.getElementById('operation').value;
-    const scores = JSON.parse(localStorage.getItem('scores') || '[]');
-    const filteredScores = scores.filter(score => score.operation === currentOperation);
-    const scoreListDiv = document.getElementById('score-list');
-    scoreListDiv.innerHTML = '<h2>Highscores - ' + getOperationName(currentOperation) + '</h2>';
+    const operation = document.getElementById('operation').value;
+    let scores = JSON.parse(localStorage.getItem(`scores_${operation}`) || '[]');
     
-    if (filteredScores.length === 0) {
-        scoreListDiv.innerHTML += '<p>Noch keine Highscores für diese Rechenart.</p>';
-        return;
-    }
-
-    const list = document.createElement('ol');
-    filteredScores.slice(0, 10).forEach(score => {
-        const li = document.createElement('li');
-        const date = new Date(score.date).toLocaleDateString();
-        li.textContent = `${score.score} Punkte (Max: ${score.maxResult}) - ${date}`;
-        list.appendChild(li);
+    // Sortiere nach Datum (alt nach neu)
+    scores.sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    // Nimm die letzten 10 Einträge
+    scores = scores.slice(-10);
+    
+    const scoreList = document.getElementById('score-list');
+    scoreList.innerHTML = '<h3>Letzte 10 Runden:</h3>';
+    
+    scores.forEach(entry => {
+        const date = new Date(entry.date);
+        const formattedDate = date.toLocaleDateString('de-DE');
+        const formattedTime = date.toLocaleTimeString('de-DE');
+        const scoreItem = document.createElement('div');
+        scoreItem.textContent = `${formattedDate} ${formattedTime} - Punkte: ${entry.score} (bis ${entry.maxResult})`;
+        scoreList.appendChild(scoreItem);
     });
-    scoreListDiv.appendChild(list);
 }
 
 function getOperationName(operation) {
-    const names = {
+    const operationNames = {
         'addition': 'Addition (ohne Übertrag)',
-        'addition-tens': 'Addition (Zehner+Zahl)',
-        'addition-simple-carry': 'Addition (einfacher Übertrag)',
         'addition-carry': 'Addition (mit Übertrag)',
+        'addition-tens': 'Addition (Zehner+Zahl)',
+        'addition-simple-carry': 'Addition (Übertrag einfach)',
+        'mixed-simple': 'Addition & Subtraktion (Übertrag einfach)',
+        'mixed-carry': 'Addition & Subtraktion (mit Übertrag)',
         'subtraktion': 'Subtraktion (ohne Übertrag)',
+        'subtraktion-simple-carry': 'Subtraktion (Übertrag einfach)',
         'subtraktion-carry': 'Subtraktion (mit Übertrag)',
         'multiplikation': 'Multiplikation',
         'division': 'Division'
     };
-    return names[operation] || operation;
+    return operationNames[operation] || operation;
 }
 
 function clearHighscores() {
