@@ -62,6 +62,14 @@ answerInput.addEventListener('keypress', function(event) {
     }
 });
 
+// Event-Listener für sofortige Überprüfung
+answerInput.addEventListener('input', function(event) {
+    const userAnswer = parseInt(this.value);
+    if (!isNaN(userAnswer) && userAnswer === correctAnswer && !isProcessingAnswer) {
+        checkAnswer();
+    }
+});
+
 // Operation-specific maxResult configurations
 const operationLimits = {
     'addition': { min: 10, max: 100 },
@@ -88,7 +96,7 @@ function updateMaxResultOptions() {
     maxResultSelect.innerHTML = '';
 
     // Add appropriate options based on operation limits
-    const possibleValues = [10, 20, 50, 80, 100];
+    const possibleValues = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
     possibleValues.forEach(value => {
         if (value >= limits.min && value <= limits.max) {
             const option = document.createElement('option');
@@ -145,7 +153,7 @@ function startTimer() {
         timeLeft--;
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
-        timerDiv.innerText = `Zeit: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        timerDiv.innerText = `⏲: ${minutes}:${seconds.toString().padStart(2, '0')}`;
         
         // Aktualisiere den Fortschrittsbalken
         const progressPercent = (timeLeft / totalTime) * 100;
@@ -236,8 +244,8 @@ function generateQuestion(operation) {
                 correctAnswer = num1 - num2;
                 break;
             case 'multiplikation':
-                num1 = Math.floor(Math.random() * Math.sqrt(maxResult));
-                num2 = Math.floor(Math.random() * (maxResult / (num1 || 1)));
+                num1 = Math.floor(Math.random() * 10) + 1; // Zahl von 1-10
+                num2 = Math.floor(Math.random() * 10) + 1; // Zahl von 1-10
                 correctAnswer = num1 * num2;
                 break;
             case 'division':
@@ -266,7 +274,7 @@ function generateQuestion(operation) {
         'subtraktion': '-',
         'subtraktion-simple-carry': '-',
         'subtraktion-carry': '-',
-        'multiplikation': '*',
+        'multiplikation': '⋅',
         'division': '/'
     }[operation];
 
@@ -320,6 +328,7 @@ function checkAnswer() {
 
 function skipQuestion() {
     score = Math.max(0, score - 1); // Verhindere negative Punktzahl
+    playSound(wrongSound); // Spiele den falschen Sound ab
     scoreDiv.innerText = `Punkte: ${score}`;
     generateQuestion(document.getElementById('operation').value);
     clearCanvas(); // Notiz löschen
@@ -347,7 +356,7 @@ function endGame() {
         saveGifButton.style.display = 'none'; // Verstecke den Speichern-Button
     } else {
         // Normales Spielende - zeige GIF
-        const gifQueries = ["welpe", , "niedliche tiere", "funny pets", "cute dog","funny sheep","Pfohlen"];
+        const gifQueries = ["welpe", "niedliche tiere", "lustige tiere", "Pfohlen"];
         const TENOR_API_KEY = 'AIzaSyDXkrNEOQrYyYNVKX4X5QXeu6Cv35NP26M';
         const TENOR_API_URL = 'https://tenor.googleapis.com/v2/search';
         
@@ -358,6 +367,7 @@ function endGame() {
 
         async function fetchRandomGif() {
             const randomQuery = gifQueries[Math.floor(Math.random() * gifQueries.length)];
+            console.log('GIF Suchanfrage:', randomQuery);
             
             try {
                 const response = await fetch(
@@ -481,7 +491,7 @@ function restartGame() {
     // Reset input and score display
     answerInput.value = '';
     scoreDiv.innerText = 'Punkte: 0';
-    timerDiv.innerText = 'Zeit: 5:00';
+    timerDiv.innerText = '⏲: 5:00';
     
     // Update scores for the current operation
     displayScores();
@@ -649,3 +659,17 @@ canvas.addEventListener('touchend', stopDrawing, { passive: false });
 
 // Zeichnung löschen
 clearDrawingBtn.addEventListener('click', clearCanvas);
+
+// Minimieren/Maximieren der Zeichen-Steuerung
+const minimizeButton = document.getElementById('minimize-button');
+
+minimizeButton.addEventListener('click', (e) => {
+    e.stopPropagation(); // Verhindert, dass das Klicken an das Elternelement weitergegeben wird
+    drawingControls.classList.add('minimized');
+});
+
+drawingControls.addEventListener('click', () => {
+    if (drawingControls.classList.contains('minimized')) {
+        drawingControls.classList.remove('minimized');
+    }
+});

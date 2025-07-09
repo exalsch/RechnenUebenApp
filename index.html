@@ -18,8 +18,8 @@
                     <option value="addition-carry">Addition (mit Übertrag)</option>
                     <option value="addition-tens">Addition (Zehner+Zahl)</option>
                     <option value="addition-simple-carry">Addition (Übertrag einfach)</option>
-                    <option value="mixed-simple">Addition & Subtraktion (Übertrag einfach)</option>
-                    <option value="mixed-carry">Addition & Subtraktion (mit Übertrag)</option>
+                    <option value="mixed-simple">+ & - (Übertrag einfach)</option>
+                    <option value="mixed-carry">+ & - (mit Übertrag)</option>
                     <option value="subtraktion">Subtraktion (ohne Übertrag)</option>
                     <option value="subtraktion-simple-carry">Subtraktion (Übertrag einfach)</option>
                     <option value="subtraktion-carry">Subtraktion (mit Übertrag)</option>
@@ -42,23 +42,22 @@
                 <div id="question"></div>
                 <div class="drawing-section">
                     <div id="drawing-controls">
-                        <button id="clear-drawing">Notiz löschen</button>
+                        <button id="minimize-button" title="Minimieren">—</button>
+                        <button id="clear-drawing" title="Notiz löschen">🗑️</button>
                         <button id="sound-toggle" class="sound-button">🔔</button>
                         <div class="drawing-tools">
-                            <label for="color-picker">Farbe:</label>
-                            <input type="color" id="color-picker" value="#000000">
-                            <label for="line-width">Strichstärke:</label>
-                            <input type="range" id="line-width" min="1" max="10" value="2">
+                            <input type="color" id="color-picker" value="#000000" title="Farbe wählen">
+                            <input type="range" id="line-width" min="1" max="10" value="2" title="Strichstärke anpassen">
                         </div>
                     </div>
                 </div>
                 <input type="number" id="answer" placeholder="Deine Antwort">
-                <button id="submit-answer">Antwort einreichen</button>
-                <button id="skip-question">Überspringen (-1 Punkt)</button>
-                <button id="end-game">Beenden</button>
+                <button id="submit-answer" title="Antwort einreichen">👍</button>
+                <button id="skip-question" title="Überspringen (-1 Punkt)">⏭️</button>
+                <button id="end-game" title="Beenden">🔚</button>
                 <div id="score">Punkte: 0</div>
                 <div id="timer-container">
-                    <div id="timer">Zeit: 5:00</div>
+                    <div id="timer">⏲: 5:00</div>
                     <div id="progress-bar">
                         <div id="progress"></div>
                     </div>

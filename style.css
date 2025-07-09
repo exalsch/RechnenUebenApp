@@ -243,6 +243,35 @@ label {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 3;
     display: none;
+    transition: all 0.3s ease-in-out;
+}
+
+#minimize-button {
+    padding: 0px 8px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+
+#drawing-controls.minimized {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#drawing-controls.minimized::after {
+    content: '🖊️';
+    font-size: 24px;
+}
+
+#drawing-controls.minimized > * {
+    display: none;
 }
 
 #drawing-controls.game-active {
