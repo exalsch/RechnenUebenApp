@@ -10,7 +10,10 @@
     <div class="container">
         <canvas id="drawing-canvas"></canvas>
         <div class="content">
-            <h1>Mathe Lern App</h1>
+            <div class="header">
+                <h1>Mathe Lern App</h1>
+                <button id="settings-button" class="settings-button" title="Einstellungen">⚙️</button>
+            </div>
             <div id="settings">
                 <label for="operation">Wähle die Art der Aufgaben:</label>
                 <select id="operation">
@@ -71,6 +74,31 @@
                 <button id="restart-button">Neu starten</button>
             </div>
             <div id="score-list"></div>
+        </div>
+    </div>
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <span id="close-settings-modal" class="close-button">&times;</span>
+            <h2>Einstellungen</h2>
+            <div id="security-check">
+                <p>Bitte löse die folgende Aufgabe, um die Einstellungen zu öffnen:</p>
+                <p id="security-question"></p>
+                <input type="number" id="security-answer" placeholder="Antwort">
+                <button id="security-submit">Bestätigen</button>
+            </div>
+            <div id="settings-content" class="hidden">
+                <label for="tenor-api-key">TENOR API Key:</label>
+                <input type="text" id="tenor-api-key" placeholder="Dein TENOR API Key">
+                <label for="gif-queries">GIF Suchbegriffe (getrennt durch ;):</label>
+                <input type="text" id="gif-queries" placeholder="z.B. welpe;lustige tiere">
+                <hr>
+                <h3>Galerie</h3>
+                <button id="import-gallery">Galerie importieren</button>
+                <input type="file" id="import-gallery-input" class="hidden" accept=".json">
+                <button id="export-gallery">Galerie exportieren</button>
+                <hr>
+                <button id="save-settings">Einstellungen speichern</button>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>

@@ -41,6 +41,24 @@ const galleryButton = document.getElementById('gallery-button');
 const saveGifButton = document.getElementById('save-gif');
 const scoreList = document.getElementById('score-list');
 
+// Settings Modal Elements
+const settingsButton = document.getElementById('settings-button');
+const settingsModal = document.getElementById('settings-modal');
+const closeSettingsModalBtn = document.getElementById('close-settings-modal');
+const securityCheckDiv = document.getElementById('security-check');
+const securityQuestionP = document.getElementById('security-question');
+const securityAnswerInput = document.getElementById('security-answer');
+const securitySubmitBtn = document.getElementById('security-submit');
+const settingsContentDiv = document.getElementById('settings-content');
+const tenorApiKeyInput = document.getElementById('tenor-api-key');
+const gifQueriesInput = document.getElementById('gif-queries');
+const saveSettingsBtn = document.getElementById('save-settings');
+const importGalleryBtn = document.getElementById('import-gallery');
+const importGalleryInput = document.getElementById('import-gallery-input');
+const exportGalleryBtn = document.getElementById('export-gallery');
+
+let securityQuestionAnswer;
+
 startButton.addEventListener('click', startGame);
 submitButton.addEventListener('click', () => {
     if (!isProcessingAnswer) {
@@ -53,6 +71,15 @@ restartButton.addEventListener('click', restartGame);
 clearHighscoreButton.addEventListener('click', clearHighscores);
 galleryButton.addEventListener('click', showGallery);
 saveGifButton.addEventListener('click', saveGif);
+
+// Settings Modal Listeners
+settingsButton.addEventListener('click', openSettingsModal);
+closeSettingsModalBtn.addEventListener('click', closeSettingsModal);
+securitySubmitBtn.addEventListener('click', checkSecurityAnswer);
+saveSettingsBtn.addEventListener('click', saveSettings);
+exportGalleryBtn.addEventListener('click', exportGallery);
+importGalleryBtn.addEventListener('click', () => importGalleryInput.click());
+importGalleryInput.addEventListener('change', importGallery);
 
 // Event-Listener für die Enter-Taste
 answerInput.addEventListener('keypress', function(event) {
@@ -334,6 +361,10 @@ function skipQuestion() {
     clearCanvas(); // Notiz löschen
 }
 
+// Load settings from localStorage or use defaults
+let TENOR_API_KEY = localStorage.getItem('TENOR_API_KEY') || 'LIVDSRZULEJO'; // Default Key
+let gifQueries = (localStorage.getItem('gifQueries') || "welpe;niedliche tiere;lustige tiere;Pfohlen").split(';');
+
 function endGame() {
     clearInterval(timer);
     gameDiv.classList.add('hidden');
@@ -497,6 +528,117 @@ function restartGame() {
     displayScores();
     clearCanvas(); // Notiz löschen
 }
+
+// Settings Modal Functions
+function openSettingsModal() {
+    generateSecurityQuestion();
+    settingsModal.classList.remove('hidden');
+}
+
+function closeSettingsModal() {
+    settingsModal.classList.add('hidden');
+    securityCheckDiv.classList.remove('hidden');
+    settingsContentDiv.classList.add('hidden');
+    securityAnswerInput.value = '';
+}
+
+const securityQuestions = [
+    { question: "Was ist 12 * 11?", answer: 132 },
+    { question: "Was ist 125 / 5?", answer: 25 },
+    { question: "Was ist die Wurzel aus 144?", answer: 12 },
+    { question: "Was ist 7 * 8 + 4?", answer: 60 },
+    { question: "Was ist 100 - 3 * 3?", answer: 91 }
+];
+
+function generateSecurityQuestion() {
+    const randomIndex = Math.floor(Math.random() * securityQuestions.length);
+    const selectedQuestion = securityQuestions[randomIndex];
+    securityQuestionAnswer = selectedQuestion.answer;
+    securityQuestionP.textContent = selectedQuestion.question;
+}
+
+function checkSecurityAnswer() {
+    const userAnswer = parseInt(securityAnswerInput.value);
+    if (userAnswer === securityQuestionAnswer) {
+        securityCheckDiv.classList.add('hidden');
+        settingsContentDiv.classList.remove('hidden');
+        // Load current settings into fields
+        tenorApiKeyInput.value = TENOR_API_KEY;
+        gifQueriesInput.value = gifQueries.join(';');
+    } else {
+        alert('Falsche Antwort. Bitte versuche es erneut.');
+        generateSecurityQuestion();
+        securityAnswerInput.value = '';
+    }
+}
+
+function saveSettings() {
+    TENOR_API_KEY = tenorApiKeyInput.value.trim();
+    const queries = gifQueriesInput.value.trim();
+
+    if (!TENOR_API_KEY) {
+        alert('Der API Key darf nicht leer sein.');
+        return;
+    }
+    if (!queries) {
+        alert('Die Suchbegriffe dürfen nicht leer sein.');
+        return;
+    }
+
+    gifQueries = queries.split(';').map(q => q.trim()).filter(q => q);
+    localStorage.setItem('TENOR_API_KEY', TENOR_API_KEY);
+    localStorage.setItem('gifQueries', gifQueries.join(';'));
+
+    alert('Einstellungen gespeichert!');
+    closeSettingsModal();
+}
+
+function exportGallery() {
+    if (savedGifs.length === 0) {
+        alert('Die Galerie ist leer. Es gibt nichts zu exportieren.');
+        return;
+    }
+    const dataStr = JSON.stringify(savedGifs, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'galerie-export.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function importGallery(event) {
+    const file = event.target.files[0];
+    if (!file) {
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedGifs = JSON.parse(e.target.result);
+            if (!Array.isArray(importedGifs) || !importedGifs.every(item => typeof item === 'string')) {
+                throw new Error('Ungültiges Dateiformat.');
+            }
+
+            // Merge without duplicates
+            const newGifs = importedGifs.filter(gif => !savedGifs.includes(gif));
+            savedGifs.push(...newGifs);
+            localStorage.setItem('savedGifs', JSON.stringify(savedGifs));
+            alert(`${newGifs.length} neue GIFs wurden zur Galerie hinzugefügt.`);
+            showGallery(); // Refresh gallery view if open
+        } catch (error) {
+            alert('Fehler beim Importieren der Datei: ' + error.message);
+        }
+    };
+    reader.readAsText(file);
+    // Reset file input
+    importGalleryInput.value = '';
+}
+
 
 // Galerie-Funktionalität
 let savedGifs = JSON.parse(localStorage.getItem('savedGifs') || '[]');
