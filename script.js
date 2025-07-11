@@ -163,6 +163,7 @@ function startGame() {
     gameDiv.classList.remove('hidden');
     settings.classList.add('hidden');
     settingsButton.classList.add('hidden');
+    settingsButton.classList.add('hidden');
     scoreList.classList.add('hidden');
     generateQuestion(operation);
     startTimer();
@@ -517,6 +518,7 @@ function restartGame() {
     resultDiv.classList.add('hidden');
     scoreList.classList.add('hidden');
     settings.classList.remove('hidden');
+    settingsButton.classList.remove('hidden');
     settingsButton.classList.remove('hidden');
     
     // Reset input and score display
