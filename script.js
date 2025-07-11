@@ -162,6 +162,7 @@ function startGame() {
     timeLeft = 300;
     gameDiv.classList.remove('hidden');
     settings.classList.add('hidden');
+    settingsButton.classList.add('hidden');
     scoreList.classList.add('hidden');
     generateQuestion(operation);
     startTimer();
@@ -369,7 +370,6 @@ function endGame() {
     clearInterval(timer);
     gameDiv.classList.add('hidden');
     resultDiv.classList.remove('hidden');
-    scoreList.classList.remove('hidden');
     finalScoreDiv.innerText = `Dein Punktestand: ${score}`;
     
     const resultGif = document.getElementById('result-gif');
@@ -511,13 +511,13 @@ function restartGame() {
     // Clear game state
     clearInterval(timer);
     score = 0;
-    timeLeft = 300;
     
     // Reset UI
     gameDiv.classList.add('hidden');
     resultDiv.classList.add('hidden');
     scoreList.classList.add('hidden');
     settings.classList.remove('hidden');
+    settingsButton.classList.remove('hidden');
     
     // Reset input and score display
     answerInput.value = '';
@@ -660,7 +660,7 @@ function removeGif(gifUrl) {
 
 function showGallery() {
     settings.classList.add('hidden');
-    gameDiv.classList.add('hidden');
+    settingsButton.classList.add('hidden');
     resultDiv.classList.add('hidden');
     scoreList.classList.add('hidden');
     
@@ -679,8 +679,9 @@ function showGallery() {
     const backButton = document.createElement('button');
     backButton.textContent = 'Zurück zum Hauptmenü';
     backButton.onclick = () => {
-        galleryDiv.classList.add('hidden');
+        galleryDiv.remove();
         settings.classList.remove('hidden');
+        settingsButton.classList.remove('hidden');
     };
     galleryDiv.appendChild(backButton);
     
