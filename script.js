@@ -683,7 +683,32 @@ function importGallery(event) {
 
 
 // Galerie-Funktionalität
+const galleryModal = document.getElementById('gallery-modal');
+const closeGalleryModalBtn = document.getElementById('close-gallery-modal');
+const galleryContent = document.getElementById('gallery-content');
+const prevPageBtn = document.getElementById('prev-page');
+const nextPageBtn = document.getElementById('next-page');
+const pageInfo = document.getElementById('page-info');
+const paginationControls = document.getElementById('pagination-controls');
+
 let savedGifs = JSON.parse(localStorage.getItem('savedGifs') || '[]');
+let currentPage = 1;
+const gifsPerPage = 20;
+
+closeGalleryModalBtn.addEventListener('click', () => galleryModal.classList.add('hidden'));
+prevPageBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--;
+        displayGalleryPage(currentPage);
+    }
+});
+nextPageBtn.addEventListener('click', () => {
+    const totalPages = Math.ceil(savedGifs.length / gifsPerPage);
+    if (currentPage < totalPages) {
+        currentPage++;
+        displayGalleryPage(currentPage);
+    }
+});
 
 function saveGif() {
     const currentGif = document.getElementById('result-gif').src;
@@ -695,58 +720,72 @@ function saveGif() {
 }
 
 function removeGif(gifUrl) {
-    savedGifs = savedGifs.filter(gif => gif !== gifUrl);
+    savedGifs = savedGifs.filter(url => url !== gifUrl);
     localStorage.setItem('savedGifs', JSON.stringify(savedGifs));
-    showGallery(); // Aktualisiere die Galerie-Ansicht
+    const totalPages = Math.ceil(savedGifs.length / gifsPerPage);
+    if (currentPage > totalPages) {
+        currentPage = totalPages > 0 ? totalPages : 1;
+    }
+    displayGalleryPage(currentPage);
 }
 
 function showGallery() {
-    settings.classList.add('hidden');
-    settingsButton.classList.add('hidden');
-    resultDiv.classList.add('hidden');
-    scoreList.classList.add('hidden');
-    
-    // Erstelle oder aktualisiere das Galerie-Element
-    let galleryDiv = document.getElementById('gallery');
-    if (!galleryDiv) {
-        galleryDiv = document.createElement('div');
-        galleryDiv.id = 'gallery';
-        document.querySelector('.container').appendChild(galleryDiv);
+    currentPage = 1;
+    galleryModal.classList.remove('hidden');
+    displayGalleryPage(currentPage);
+}
+
+function displayGalleryPage(page) {
+    galleryContent.innerHTML = '';
+    const startIndex = (page - 1) * gifsPerPage;
+    const endIndex = startIndex + gifsPerPage;
+    const paginatedGifs = savedGifs.slice(startIndex, endIndex);
+
+    if (savedGifs.length === 0) {
+        galleryContent.innerHTML = '<p>Die Galerie ist leer.</p>';
+        paginationControls.classList.add('hidden');
+        return;
+    } else {
+        paginationControls.classList.remove('hidden');
     }
-    
-    // Lösche bisherigen Inhalt
-    galleryDiv.innerHTML = '';
-    
-    // Füge Zurück-Button hinzu
-    const backButton = document.createElement('button');
-    backButton.textContent = 'Zurück zum Hauptmenü';
-    backButton.onclick = () => {
-        galleryDiv.remove();
-        settings.classList.remove('hidden');
-        settingsButton.classList.remove('hidden');
-    };
-    galleryDiv.appendChild(backButton);
-    
-    // Zeige gespeicherte GIFs an
-    savedGifs.forEach(gifUrl => {
-        const item = document.createElement('div');
-        item.className = 'gallery-item';
-        
+
+    paginatedGifs.forEach(gifUrl => {
+        const gifContainer = document.createElement('div');
+        gifContainer.className = 'gallery-item';
+
         const img = document.createElement('img');
         img.src = gifUrl;
         img.alt = 'Gespeichertes GIF';
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-gif-btn';
+        removeBtn.textContent = '🗑️';
+        removeBtn.onclick = () => {
+            removeGif(gifUrl);
+        };
         
-        const removeButton = document.createElement('button');
-        removeButton.className = 'remove-button';
-        removeButton.innerHTML = '×';
-        removeButton.onclick = () => removeGif(gifUrl);
-        
-        item.appendChild(img);
-        item.appendChild(removeButton);
-        galleryDiv.appendChild(item);
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-gif-btn';
+        copyBtn.textContent = '📋';
+        copyBtn.onclick = () => {
+            navigator.clipboard.writeText(gifUrl).then(() => {
+                alert('GIF-URL in die Zwischenablage kopiert!');
+            }).catch(err => {
+                console.error('Fehler beim Kopieren der URL: ', err);
+            });
+        };
+
+        gifContainer.appendChild(img);
+        gifContainer.appendChild(removeBtn);
+        gifContainer.appendChild(copyBtn);
+        galleryContent.appendChild(gifContainer);
     });
-    
-    galleryDiv.classList.remove('hidden');
+
+    const totalPages = Math.ceil(savedGifs.length / gifsPerPage);
+    pageInfo.textContent = `Seite ${page} von ${totalPages}`;
+
+    prevPageBtn.disabled = page === 1;
+    nextPageBtn.disabled = page === totalPages || totalPages === 0;
 }
 
 // Zeichenfunktionalität
