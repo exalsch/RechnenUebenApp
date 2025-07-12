@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="/manifest.json">
     <title>Mathe Lern App</title>
 </head>
 <body>
@@ -12,6 +13,7 @@
         <div class="content">
             <div class="header">
                 <h1>Mathe Lern App</h1>
+                <div id="api-key-warning" class="warning hidden"></div>
                 <button id="settings-button" class="settings-button" title="Einstellungen">⚙️</button>
             </div>
             <div id="settings">
@@ -87,7 +89,7 @@
                 <button id="security-submit">Bestätigen</button>
             </div>
             <div id="settings-content" class="hidden">
-                <label for="tenor-api-key">TENOR API Key:</label>
+                <label for="tenor-api-key">Tenor API Key:</label>
                 <input type="text" id="tenor-api-key" placeholder="Dein TENOR API Key">
                 <label for="gif-queries">GIF Suchbegriffe (getrennt durch ;):</label>
                 <input type="text" id="gif-queries" placeholder="z.B. welpe;lustige tiere">

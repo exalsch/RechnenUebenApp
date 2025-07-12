@@ -136,6 +136,17 @@ label {
     background-color: #cc0000;
 }
 
+.warning {
+    color: #8a6d3b; /* Dunkelgelb */
+    background-color: #fcf8e3; /* Hellgelb */
+    border: 1px solid #faebcc;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+    font-size: 0.9em;
+    text-align: center;
+}
+
 @keyframes wrongAnswer {
     0% {
         background-color: white;

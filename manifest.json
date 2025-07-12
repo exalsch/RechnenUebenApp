@@ -1,0 +1,23 @@
+{
+  "name": "Rechnen Üben App",
+  "short_name": "Rechnen",
+  "description": "Eine einfache App zum Üben von Grundrechenarten mit lustigen GIF-Belohnungen.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3367D6",
+  "icons": [
+    {
+      "src": "img/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "img/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -145,7 +145,25 @@ function updateMaxResultOptions() {
 document.getElementById('operation').addEventListener('change', updateMaxResultOptions);
 
 // Initialize maxResult options on page load
-document.addEventListener('DOMContentLoaded', updateMaxResultOptions);
+document.addEventListener('DOMContentLoaded', () => {
+    updateMaxResultOptions();
+    checkApiKeyWarning();
+});
+
+function checkApiKeyWarning() {
+    const apiKeyWarning = document.getElementById('api-key-warning');
+    if (TENOR_API_KEY === 'LIVDSRZULEJO' || !TENOR_API_KEY) {
+        apiKeyWarning.innerHTML = 'Hinweis: Für GIF-Belohnungen bitte einen eigenen Tenor API-Schlüssel in den ⚙️-Einstellungen eintragen.';
+        apiKeyWarning.classList.remove('hidden');
+    } else {
+        apiKeyWarning.classList.add('hidden');
+    }
+}
+
+function openSettingsModal() {
+    generateSecurityQuestion();
+    settingsModal.classList.remove('hidden');
+}
 
 function startGame() {
     const operation = document.getElementById('operation').value;
@@ -393,34 +411,56 @@ function endGame() {
         const TENOR_API_URL = 'https://tenor.googleapis.com/v2/search';
         
         function getRandomLocalGif() {
-            const randomNumber = Math.floor(Math.random() * 11) + 1;
-            return `img/end_${randomNumber}.gif`;
+            const localGifs = [
+                'img/end_1.gif',
+                'img/end_2.gif',
+                'img/end_3.gif',
+                'img/end_4.gif',
+                'img/end_5.gif',
+                'img/end_6.gif'
+            ];
+            const randomIndex = Math.floor(Math.random() * localGifs.length);
+            return localGifs[randomIndex];
+        }
+
+        function getRandomOfflineGif() {
+            const cachedUrls = JSON.parse(localStorage.getItem('cachedGifUrls') || '[]');
+            if (cachedUrls.length > 0) {
+                const randomIndex = Math.floor(Math.random() * cachedUrls.length);
+                console.log('Found cached GIF:', cachedUrls[randomIndex]);
+                return cachedUrls[randomIndex];
+            } else {
+                // Ultimate fallback to local GIFs if cache is empty
+                console.log('No cached GIFs found, falling back to local GIF.');
+                return getRandomLocalGif();
+            }
         }
 
         async function fetchRandomGif() {
-            const randomQuery = gifQueries[Math.floor(Math.random() * gifQueries.length)];
-            console.log('GIF Suchanfrage:', randomQuery);
-            
-            try {
-                const response = await fetch(
-                    `${TENOR_API_URL}?q=${encodeURIComponent(randomQuery)}&key=${TENOR_API_KEY}&client_key=mathe_lern_app&limit=30&contentfilter=high`
-                );
-                
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+            // If online, fetch a new GIF
+            if (navigator.onLine) {
+                console.log('Online: Fetching a new GIF from Tenor.');
+                const randomQuery = gifQueries[Math.floor(Math.random() * gifQueries.length)];
+                try {
+                    const response = await fetch(
+                        `${TENOR_API_URL}?q=${encodeURIComponent(randomQuery)}&key=${TENOR_API_KEY}&client_key=mathe_lern_app&limit=30&contentfilter=high`
+                    );
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const data = await response.json();
+                    if (data.results && data.results.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * data.results.length);
+                        return data.results[randomIndex].media_formats.gif.url;
+                    } else {
+                        throw new Error('No GIFs found for query: ' + randomQuery);
+                    }
+                } catch (error) {
+                    console.error('Error fetching new GIF, falling back to offline/local:', error);
+                    return getRandomOfflineGif(); // Fallback to offline logic
                 }
-                
-                const data = await response.json();
-                
-                if (data.results && data.results.length > 0) {
-                    const randomIndex = Math.floor(Math.random() * data.results.length);
-                    return data.results[randomIndex].media_formats.gif.url;
-                } else {
-                    throw new Error('No GIFs found');
-                }
-            } catch (error) {
-                console.error('Error fetching GIF:', error);
-                return getRandomLocalGif();
+            } else {
+                // If offline, use a cached GIF
+                console.log('Offline: Using a pre-cached GIF.');
+                return getRandomOfflineGif();
             }
         }
 
@@ -545,10 +585,10 @@ function closeSettingsModal() {
 }
 
 const securityQuestions = [
-    { question: "Was ist 12 * 11?", answer: 132 },
+    { question: "Was ist 12 * 4?", answer: 48 },
     { question: "Was ist 125 / 5?", answer: 25 },
-    { question: "Was ist die Wurzel aus 144?", answer: 12 },
-    { question: "Was ist 7 * 8 + 4?", answer: 60 },
+    { question: "Was ist 3 hoch 2?", answer: 9 },
+    { question: "Was ist 7 * 7 + 4?", answer: 53 },
     { question: "Was ist 100 - 3 * 3?", answer: 91 }
 ];
 
@@ -818,3 +858,72 @@ drawingControls.addEventListener('click', () => {
         drawingControls.classList.remove('minimized');
     }
 });
+
+// Service Worker Registrierung
+// ===== GIF Caching for Offline Use =====
+
+// Function to pre-cache GIFs for offline use
+async function precacheGifs() {
+    // Only run if online
+    if (!navigator.onLine) {
+        console.log('Offline, skipping GIF pre-caching.');
+        return;
+    }
+
+    console.log('Online, starting GIF pre-caching...');
+    const PRECACHE_COUNT = 20; // Number of GIFs to pre-cache
+    let cachedGifUrls = [];
+
+    try {
+        const randomQuery = gifQueries[Math.floor(Math.random() * gifQueries.length)];
+        const response = await fetch(
+            `https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(randomQuery)}&key=${TENOR_API_KEY}&client_key=mathe_lern_app&limit=${PRECACHE_COUNT}&contentfilter=high`
+        );
+
+        if (!response.ok) throw new Error('Failed to fetch GIF list for precaching');
+
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+            const gifUrls = data.results.map(result => result.media_formats.gif.url);
+
+            // Open the dynamic cache (defined in service-worker.js)
+            const cache = await caches.open('rechnen-ueben-app-dynamic-cache-v1');
+
+            // Fetch and cache each GIF
+            for (const url of gifUrls) {
+                try {
+                    // Use 'no-cors' to fetch opaque responses from third-party servers like Tenor
+                    const gifResponse = await fetch(url, { mode: 'no-cors' });
+                    await cache.put(url, gifResponse);
+                    cachedGifUrls.push(url);
+                    console.log('Pre-cached GIF:', url);
+                } catch (error) {
+                    console.error('Failed to cache a single GIF:', url, error);
+                }
+            }
+            
+            // Store the list of successfully cached URLs in localStorage
+            if (cachedGifUrls.length > 0) {
+                localStorage.setItem('cachedGifUrls', JSON.stringify(cachedGifUrls));
+                console.log(`${cachedGifUrls.length} GIFs successfully pre-cached and URLs stored.`);
+            }
+        }
+    } catch (error) {
+        console.error('Error during GIF pre-caching process:', error);
+    }
+}
+
+// Service Worker Registrierung
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').then(registration => {
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    }, err => {
+      console.log('ServiceWorker registration failed: ', err);
+    });
+
+    // Start pre-caching GIFs after a short delay to not block initial load
+    setTimeout(precacheGifs, 3000);
+  });
+}
