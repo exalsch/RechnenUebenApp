@@ -1,20 +1,4 @@
-// Sound-Effekte
-const correctSound = new Audio('sounds/correct.mp3');
-const wrongSound = new Audio('sounds/wrong.mp3');
-let isSoundEnabled = true;
 
-// Sound-Toggle Funktionalität
-const soundToggleBtn = document.getElementById('sound-toggle');
-soundToggleBtn.addEventListener('click', () => {
-    isSoundEnabled = !isSoundEnabled;
-    soundToggleBtn.textContent = isSoundEnabled ? '🔔' : '🔕';
-});
-
-function playSound(sound) {
-    if (isSoundEnabled) {
-        sound.play();
-    }
-}
 
 let score = 0;
 let timeLeft = 300;
