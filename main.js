@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Load settings from localStorage or use defaults
+window.playerName = localStorage.getItem('playerName') || ''; // Player name
 window.TENOR_API_KEY = localStorage.getItem('TENOR_API_KEY') || 'LIVDSRZULEJO'; // Default Key
 window.gifQueries = (localStorage.getItem('gifQueries') || "welpe;niedliche tiere;lustige tiere;Pfohlen").split(';');
 window.gameTime = parseInt(localStorage.getItem('gameTime')) || 300; // Default 5 minutes
@@ -111,7 +112,11 @@ function endGame() {
     clearInterval(timer);
     gameDiv.classList.add('hidden');
     resultDiv.classList.remove('hidden');
-    finalScoreDiv.innerText = `Dein Punktestand: ${score}`;
+    
+    // Generate encouraging message with player name
+    const playerName = window.playerName || 'Spieler';
+    const encouragingMessage = getEncouragingMessage(playerName, score);
+    finalScoreDiv.innerHTML = `<strong>${encouragingMessage}</strong><br>Dein Punktestand: ${score}`;
     
     // Deactivate drawing controls
     const drawingControls = document.getElementById('drawing-controls');
@@ -124,6 +129,58 @@ function endGame() {
     window.saveScore();
     window.displayScores();
     window.isGameRunning = false;
+}
+
+function getEncouragingMessage(playerName, score) {
+    const messages = {
+        excellent: [
+            `Fantastisch, ${playerName}! Du bist ein Mathe-Meister! 🌟`,
+            `Wow, ${playerName}! Das war eine hervorragende Leistung! 🎯`,
+            `Unglaublich, ${playerName}! Du hast es drauf! 🚀`,
+            `Perfekt, ${playerName}! Du warst heute spitze! ⭐`,
+            `Phänomenal, ${playerName}! Einstein wäre stolz! 🧠`,
+            `Brillant, ${playerName}! Du bist ein Genie! 💡`
+        ],
+        great: [
+            `Sehr gut gemacht, ${playerName}! Du verbesserst dich stetig! 👍`,
+            `Super, ${playerName}! Das war eine tolle Runde! 🎉`,
+            `Klasse, ${playerName}! Weiter so! 💪`,
+            `Toll, ${playerName}! Du bist auf einem guten Weg! 🌈`,
+            `Starke Leistung, ${playerName}! Du rockst das! 🎸`,
+            `Beeindruckend, ${playerName}! Du näherst dich der Spitze! 🏔️`
+        ],
+        good: [
+            `Gut gemacht, ${playerName}! Übung macht den Meister! 📚`,
+            `Schön, ${playerName}! Du machst Fortschritte! 🎯`,
+            `Prima, ${playerName}! Bleib dran! 💫`,
+            `Weiter so, ${playerName}! Du schaffst das! 🌟`,
+            `Solide Arbeit, ${playerName}! Jeder Schritt zählt! 👣`,
+            `Nicht schlecht, ${playerName}! Du wirst immer besser! 🥳`
+        ],
+        encouraging: [
+            `Nicht aufgeben, ${playerName}! Jeder fängt mal klein an! 🌱`,
+            `Dranbleiben, ${playerName}! Übung macht den Meister! 💪`,
+            `Kopf hoch, ${playerName}! Beim nächsten Mal wird's besser! 🌞`,
+            `Mut gefasst, ${playerName}! Du wirst immer besser! 🚀`,
+            `Gib nicht auf, ${playerName}! Fehler sind nur getarnte Lektionen! 🎓`,
+            `Du bist stärker als du denkst, ${playerName}! Zeig's allen! 💥`
+        ]
+    };
+
+    
+    let messageArray;
+    if (score >= 15) {
+        messageArray = messages.excellent;
+    } else if (score >= 10) {
+        messageArray = messages.great;
+    } else if (score >= 5) {
+        messageArray = messages.good;
+    } else {
+        messageArray = messages.encouraging;
+    }
+    
+    const randomIndex = Math.floor(Math.random() * messageArray.length);
+    return messageArray[randomIndex];
 }
 
 

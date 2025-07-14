@@ -67,6 +67,7 @@ function checkSecurityAnswer() {
     if (userAnswer === securityQuestionAnswer) {
         document.getElementById('security-check').classList.add('hidden');
         document.getElementById('settings-content').classList.remove('hidden');
+        document.getElementById('player-name').value = window.playerName || '';
         document.getElementById('tenor-api-key').value = window.TENOR_API_KEY;
         document.getElementById('gif-queries').value = window.gifQueries.join(';');
         document.getElementById('game-time').value = window.gameTime || 300;
@@ -79,6 +80,7 @@ function checkSecurityAnswer() {
 }
 
 function saveSettings() {
+    const playerName = document.getElementById('player-name').value.trim();
     window.TENOR_API_KEY = document.getElementById('tenor-api-key').value.trim();
     const queries = document.getElementById('gif-queries').value.trim();
     const gameTime = parseInt(document.getElementById('game-time').value);
@@ -101,9 +103,11 @@ function saveSettings() {
         return;
     }
 
+    window.playerName = playerName;
     window.gifQueries = queries.split(';').map(q => q.trim()).filter(q => q);
     window.gameTime = gameTime;
     window.gifCacheCount = gifCacheCount;
+    localStorage.setItem('playerName', playerName);
     localStorage.setItem('TENOR_API_KEY', window.TENOR_API_KEY);
     localStorage.setItem('gifQueries', window.gifQueries.join(';'));
     localStorage.setItem('gameTime', gameTime.toString());
