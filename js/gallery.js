@@ -48,9 +48,13 @@ const gifsPerPage = 20;
 function saveGif() {
     const saveGifButton = document.getElementById('save-gif');
     const currentGif = document.getElementById('result-gif').src;
+    
     if (!savedGifs.includes(currentGif)) {
         savedGifs.push(currentGif);
         localStorage.setItem('savedGifs', JSON.stringify(savedGifs));
+        saveGifButton.classList.add('saved');
+    } else {
+        // If already saved, ensure the button shows saved state
         saveGifButton.classList.add('saved');
     }
 }
@@ -181,7 +185,14 @@ window.showSaveGifButton = function() {
     const saveGifButton = document.getElementById('save-gif');
     if (saveGifButton) {
         saveGifButton.style.display = '';
-        saveGifButton.classList.remove('saved'); // Reset saved state for new GIF
+        
+        // Check if current GIF is already saved
+        const currentGif = document.getElementById('result-gif').src;
+        if (savedGifs.includes(currentGif)) {
+            saveGifButton.classList.add('saved');
+        } else {
+            saveGifButton.classList.remove('saved');
+        }
     }
 };
 

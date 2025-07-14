@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Load settings from localStorage or use defaults
 window.TENOR_API_KEY = localStorage.getItem('TENOR_API_KEY') || 'LIVDSRZULEJO'; // Default Key
 window.gifQueries = (localStorage.getItem('gifQueries') || "welpe;niedliche tiere;lustige tiere;Pfohlen").split(';');
+window.gameTime = parseInt(localStorage.getItem('gameTime')) || 300; // Default 5 minutes
 
 function endGame() {
     clearInterval(timer);
@@ -140,7 +141,10 @@ function restartGame() {
     // Reset input and score display
     answerInput.value = '';
     scoreDiv.innerText = 'Punkte: 0';
-    timerDiv.innerText = '⏲: 5:00';
+    const defaultTime = window.gameTime || 300;
+    const minutes = Math.floor(defaultTime / 60);
+    const seconds = defaultTime % 60;
+    timerDiv.innerText = `⏲: ${minutes}:${seconds.toString().padStart(2, '0')}`;
     
     // Update scores for the current operation
     window.displayScores();

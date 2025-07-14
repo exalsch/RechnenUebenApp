@@ -69,6 +69,7 @@ function checkSecurityAnswer() {
         document.getElementById('settings-content').classList.remove('hidden');
         document.getElementById('tenor-api-key').value = window.TENOR_API_KEY;
         document.getElementById('gif-queries').value = window.gifQueries.join(';');
+        document.getElementById('game-time').value = window.gameTime || 300;
     } else {
         alert('Falsche Antwort. Bitte versuche es erneut.');
         generateSecurityQuestion();
@@ -79,6 +80,7 @@ function checkSecurityAnswer() {
 function saveSettings() {
     window.TENOR_API_KEY = document.getElementById('tenor-api-key').value.trim();
     const queries = document.getElementById('gif-queries').value.trim();
+    const gameTime = parseInt(document.getElementById('game-time').value);
 
     if (!window.TENOR_API_KEY) {
         alert('Der API Key darf nicht leer sein.');
@@ -88,10 +90,16 @@ function saveSettings() {
         alert('Die Suchbegriffe dürfen nicht leer sein.');
         return;
     }
+    if (!gameTime || gameTime < 60 || gameTime > 1800) {
+        alert('Die Spielzeit muss zwischen 60 und 1800 Sekunden liegen.');
+        return;
+    }
 
     window.gifQueries = queries.split(';').map(q => q.trim()).filter(q => q);
+    window.gameTime = gameTime;
     localStorage.setItem('TENOR_API_KEY', window.TENOR_API_KEY);
     localStorage.setItem('gifQueries', window.gifQueries.join(';'));
+    localStorage.setItem('gameTime', gameTime.toString());
 
     alert('Einstellungen gespeichert!');
     closeSettingsModal();

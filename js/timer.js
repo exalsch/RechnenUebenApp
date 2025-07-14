@@ -1,5 +1,5 @@
 function startTimer() {
-    const totalTime = 300;
+    const totalTime = window.gameTime || 300;
     window.timeLeft = totalTime;
     const progressBar = document.getElementById('progress');
     

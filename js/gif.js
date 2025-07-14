@@ -67,9 +67,6 @@ function handleGameEndGif() {
         resultGif.style.display = '';
         resultGif.style.textAlign = '';
         resultGif.innerText = '';
-        if (typeof window.showSaveGifButton === 'function') {
-            window.showSaveGifButton();
-        }
         
         resultGif.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         
@@ -79,6 +76,12 @@ function handleGameEndGif() {
             } else {
                 resultGif.src = getRandomLocalGif();
             }
+            // Update save button state after GIF is loaded
+            setTimeout(() => {
+                if (typeof window.showSaveGifButton === 'function') {
+                    window.showSaveGifButton();
+                }
+            }, 100);
         });
     }
 }

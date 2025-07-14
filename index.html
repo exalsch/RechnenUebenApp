@@ -94,6 +94,15 @@
                 <label for="gif-queries">GIF Suchbegriffe (getrennt durch ;):</label>
                 <input type="text" id="gif-queries" placeholder="z.B. welpe;lustige tiere">
                 <hr>
+                <h3>Spielzeit</h3>
+                <label for="game-time">Rundendauer (Sekunden):</label>
+                <select id="game-time">
+                    <option value="60">1 Minute (60s)</option>
+                    <option value="300" selected>5 Minuten (300s)</option>
+                    <option value="600">10 Minuten (600s)</option>
+                    <option value="900">15 Minuten (900s)</option>
+                </select>
+                <hr>
                 <h3>Galerie</h3>
                 <button id="import-gallery">Galerie importieren</button>
                 <input type="file" id="import-gallery-input" class="hidden" accept=".json">

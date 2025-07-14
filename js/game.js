@@ -42,7 +42,7 @@ function startGame() {
     }
     
     window.score = 0;
-    window.timeLeft = 300;
+    window.timeLeft = window.gameTime || 300;
     document.getElementById('game').classList.remove('hidden');
     document.getElementById('settings').classList.add('hidden');
     document.getElementById('settings-button').classList.add('hidden');
