@@ -6,21 +6,26 @@ const urlsToCache = [
   '/',
   '/index.html',
   '/style.css',
-  '/script.js',
+  '/main.js',
+  '/js/sound.js',
+  '/js/gallery.js',
+  '/js/drawing.js',
+  '/js/game.js',
+  '/js/settings.js',
+  '/js/scores.js',
+  '/js/gif.js',
+  '/js/timer.js',
   '/manifest.json',
   '/sounds/correct.mp3',
-  '/sounds/correct_pups.mp3',
   '/sounds/wrong.mp3',
   '/img/end_1.gif',
   '/img/end_2.gif',
   '/img/end_3.gif',
   '/img/end_4.gif',
   '/img/end_5.gif',
-  '/img/end_6.gif'
-  // HINWEIS: App-Icons aus der manifest.json sind nicht enthalten,
-  // da sie noch nicht existieren. Füge sie hier hinzu, sobald sie erstellt sind.
-  // '/img/icon-192x192.png',
-  // '/img/icon-512x512.png'
+  '/img/end_6.gif',
+  '/img/icon-192x192.png',
+  '/img/icon-512x512.png'
 ];
 
 // Service Worker installieren und statische Assets zwischenspeichern
