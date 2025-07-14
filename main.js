@@ -34,22 +34,19 @@ const securityAnswerInput = document.getElementById('security-answer');
 const securitySubmitBtn = document.getElementById('security-submit');
 const settingsContentDiv = document.getElementById('settings-content');
 const tenorApiKeyInput = document.getElementById('tenor-api-key');
-const gifQueriesInput = document.getElementById('gif-queries');
 const saveSettingsBtn = document.getElementById('save-settings');
 
+// Declare isGameRunning globally
+let isGameRunning = false;
 
 let securityQuestionAnswer;
 
-startButton.addEventListener('click', startGame);
-submitButton.addEventListener('click', () => {
-    if (!isProcessingAnswer) {
-        checkAnswer();
-    }
-});
+// ... (rest of the code remains the same)
 skipButton.addEventListener('click', skipQuestion);
 endGameButton.addEventListener('click', endGame);
 restartButton.addEventListener('click', restartGame);
 clearHighscoreButton.addEventListener('click', clearHighscores);
+startButton.addEventListener('click', startGame);
 
 
 // Settings Modal Listeners
@@ -159,14 +156,11 @@ function startGame() {
     gameDiv.classList.remove('hidden');
     settings.classList.add('hidden');
     settingsButton.classList.add('hidden');
-    settingsButton.classList.add('hidden');
     scoreList.classList.add('hidden');
     generateQuestion(operation);
     startTimer();
     displayScores(); // Update scores for the selected operation
     isGameRunning = true;
-    canvas.classList.add('game-active');
-    drawingControls.classList.add('game-active');
 }
 
 function startTimer() {
@@ -306,7 +300,6 @@ function generateQuestion(operation) {
     questionDiv.innerText = `${num1} ${operationSymbol} ${num2}`;
     answerInput.value = '';
     answerInput.focus();
-    clearCanvas(); // Notiz löschen
 }
 
 function hasCarry(num1, num2) {
@@ -356,7 +349,6 @@ function skipQuestion() {
     playSound(wrongSound); // Spiele den falschen Sound ab
     scoreDiv.innerText = `Punkte: ${score}`;
     generateQuestion(document.getElementById('operation').value);
-    clearCanvas(); // Notiz löschen
 }
 
 // Load settings from localStorage or use defaults
@@ -370,7 +362,7 @@ function endGame() {
     finalScoreDiv.innerText = `Dein Punktestand: ${score}`;
     
     const resultGif = document.getElementById('result-gif');
-    const saveGifButton = document.getElementById('save-gif');
+    
     
     // Prüfe ob das Spiel vorzeitig beendet wurde (Timer noch nicht abgelaufen)
     if (timeLeft > 0) {
@@ -381,7 +373,9 @@ function endGame() {
         resultGif.src = '';
         resultGif.alt = 'Schade';
         resultGif.innerText = '😕';
-        saveGifButton.style.display = 'none'; // Verstecke den Speichern-Button
+        if (typeof window.hideSaveGifButton === 'function') {
+            window.hideSaveGifButton(); // Verstecke den Speichern-Button über die globale Funktion
+        }
     } else {
         // Normales Spielende - zeige GIF
         const gifQueries = ["welpe", "niedliche tiere", "lustige tiere", "Pfohlen"];
@@ -446,7 +440,9 @@ function endGame() {
         resultGif.style.display = '';
         resultGif.style.textAlign = '';
         resultGif.innerText = '';
-        saveGifButton.style.display = ''; // Zeige den Speichern-Button
+        if (typeof window.showSaveGifButton === 'function') {
+            window.showSaveGifButton(); // Zeige den Speichern-Button über die globale Funktion
+        }
         
         resultGif.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         
@@ -462,10 +458,7 @@ function endGame() {
     // Save and display scores
     saveScore();
     displayScores();
-    isGameRunning = false;
-    canvas.classList.remove('game-active');
-    drawingControls.classList.remove('game-active');
-    clearCanvas(); // Notiz löschen
+    window.isGameRunning = false;
 }
 
 function saveScore() {
@@ -537,7 +530,6 @@ function restartGame() {
     scoreList.classList.add('hidden');
     settings.classList.remove('hidden');
     settingsButton.classList.remove('hidden');
-    settingsButton.classList.remove('hidden');
     
     // Reset input and score display
     answerInput.value = '';
@@ -546,7 +538,6 @@ function restartGame() {
     
     // Update scores for the current operation
     displayScores();
-    clearCanvas(); // Notiz löschen
 }
 
 // Settings Modal Functions
@@ -615,115 +606,7 @@ function saveSettings() {
 
 
 
-// Zeichenfunktionalität
-const canvas = document.getElementById('drawing-canvas');
-const ctx = canvas.getContext('2d');
-const clearDrawingBtn = document.getElementById('clear-drawing');
-const colorPicker = document.getElementById('color-picker');
-const lineWidth = document.getElementById('line-width');
-const drawingControls = document.getElementById('drawing-controls');
 
-let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
-let isGameRunning = false;
-
-// Funktion zum Löschen der Notiz
-function clearCanvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    answerInput.focus(); // Fokus auf das Eingabefeld setzen
-}
-
-// Canvas-Größe an Container anpassen
-function resizeCanvas() {
-    const container = canvas.parentElement;
-    canvas.width = container.offsetWidth;
-    canvas.height = container.offsetHeight;
-}
-
-// Initial und bei Größenänderung Canvas anpassen
-window.addEventListener('load', () => {
-    resizeCanvas();
-    setTimeout(resizeCanvas, 100);
-});
-window.addEventListener('resize', resizeCanvas);
-
-function getMousePos(e) {
-    const rect = canvas.getBoundingClientRect();
-    return {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-    };
-}
-
-function getTouchPos(e) {
-    const rect = canvas.getBoundingClientRect();
-    return {
-        x: e.touches[0].clientX - rect.left,
-        y: e.touches[0].clientY - rect.top
-    };
-}
-
-function startDrawing(e) {
-    if (!isGameRunning) return;
-    e.preventDefault();
-    isDrawing = true;
-    const pos = e.type === 'mousedown' ? getMousePos(e) : getTouchPos(e);
-    lastX = pos.x;
-    lastY = pos.y;
-}
-
-function draw(e) {
-    if (!isGameRunning) return;
-    e.preventDefault();
-    if (!isDrawing) return;
-
-    const pos = e.type === 'mousemove' ? getMousePos(e) : getTouchPos(e);
-    
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.strokeStyle = colorPicker.value;
-    ctx.lineWidth = lineWidth.value;
-    ctx.lineCap = 'round';
-    ctx.stroke();
-
-    lastX = pos.x;
-    lastY = pos.y;
-}
-
-function stopDrawing(e) {
-    if (!isGameRunning) return;
-    e.preventDefault();
-    isDrawing = false;
-}
-
-// Event Listener für Zeichnen
-canvas.addEventListener('mousedown', startDrawing);
-canvas.addEventListener('mousemove', draw);
-canvas.addEventListener('mouseup', stopDrawing);
-canvas.addEventListener('mouseleave', stopDrawing);
-
-canvas.addEventListener('touchstart', startDrawing, { passive: false });
-canvas.addEventListener('touchmove', draw, { passive: false });
-canvas.addEventListener('touchend', stopDrawing, { passive: false });
-
-// Zeichnung löschen
-clearDrawingBtn.addEventListener('click', clearCanvas);
-
-// Minimieren/Maximieren der Zeichen-Steuerung
-const minimizeButton = document.getElementById('minimize-button');
-
-minimizeButton.addEventListener('click', (e) => {
-    e.stopPropagation(); // Verhindert, dass das Klicken an das Elternelement weitergegeben wird
-    drawingControls.classList.add('minimized');
-});
-
-drawingControls.addEventListener('click', () => {
-    if (drawingControls.classList.contains('minimized')) {
-        drawingControls.classList.remove('minimized');
-    }
-});
 
 // Service Worker Registrierung
 // ===== GIF Caching for Offline Use =====

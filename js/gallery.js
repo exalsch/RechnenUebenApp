@@ -175,3 +175,19 @@ function importGallery(event) {
     // Reset file input
     importGalleryInput.value = '';
 }
+
+// Globale Funktionen zur Steuerung des Save-Buttons von main.js aus
+window.showSaveGifButton = function() {
+    const saveGifButton = document.getElementById('save-gif');
+    if (saveGifButton) {
+        saveGifButton.style.display = '';
+        saveGifButton.classList.remove('saved'); // Reset saved state for new GIF
+    }
+};
+
+window.hideSaveGifButton = function() {
+    const saveGifButton = document.getElementById('save-gif');
+    if (saveGifButton) {
+        saveGifButton.style.display = 'none';
+    }
+};
