@@ -11,12 +11,30 @@ function getRandomLocalGif() {
     return localGifs[randomIndex];
 }
 
-function getRandomOfflineGif() {
+async function getRandomOfflineGif() {
     const cachedUrls = JSON.parse(localStorage.getItem('cachedGifUrls') || '[]');
     if (cachedUrls.length > 0) {
         const randomIndex = Math.floor(Math.random() * cachedUrls.length);
-        console.log('Found cached GIF:', cachedUrls[randomIndex]);
-        return cachedUrls[randomIndex];
+        const cachedUrl = cachedUrls[randomIndex];
+        console.log('Found cached GIF URL:', cachedUrl);
+        
+        // Try to get from service worker cache first
+        try {
+            const cache = await caches.open('rechnen-ueben-app-dynamic-cache-v1');
+            const cachedResponse = await cache.match(cachedUrl);
+            if (cachedResponse) {
+                const blob = await cachedResponse.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                console.log('Using cached GIF from service worker');
+                return objectUrl;
+            }
+        } catch (error) {
+            console.error('Error accessing cached GIF:', error);
+        }
+        
+        // Fallback to direct URL (may fail offline)
+        console.log('Cache miss, trying direct URL (may fail offline)');
+        return cachedUrl;
     } else {
         console.log('No cached GIFs found, falling back to local GIF.');
         return getRandomLocalGif();
@@ -41,13 +59,15 @@ async function fetchRandomGif() {
             }
         } catch (error) {
             console.error('Error fetching new GIF, falling back to offline/local:', error);
-            return getRandomOfflineGif();
+            return await getRandomOfflineGif();
         }
     } else {
         console.log('Offline: Using a pre-cached GIF.');
-        return getRandomOfflineGif();
+        return await getRandomOfflineGif();
     }
 }
+
+let isLoadingGif = false;
 
 function handleGameEndGif() {
     const resultGif = document.getElementById('result-gif');
@@ -62,7 +82,14 @@ function handleGameEndGif() {
         if (typeof window.hideSaveGifButton === 'function') {
             window.hideSaveGifButton();
         }
+        isLoadingGif = false;
     } else {
+        if (isLoadingGif) {
+            console.log('GIF already loading, skipping duplicate request');
+            return;
+        }
+        
+        isLoadingGif = true;
         resultGif.style.fontSize = '';
         resultGif.style.display = '';
         resultGif.style.textAlign = '';
@@ -70,7 +97,7 @@ function handleGameEndGif() {
         
         resultGif.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         
-        fetchRandomGif().then(gifUrl => {
+        fetchRandomGif().then(async (gifUrl) => {
             if (gifUrl) {
                 resultGif.src = gifUrl;
             } else {
@@ -79,10 +106,32 @@ function handleGameEndGif() {
             
             // Wait for image to load before updating save button
             resultGif.onload = () => {
+                isLoadingGif = false;
                 if (typeof window.showSaveGifButton === 'function') {
                     window.showSaveGifButton();
                 }
             };
+            
+            resultGif.onerror = () => {
+                console.log('Failed to load GIF, falling back to local');
+                isLoadingGif = false;
+                resultGif.src = getRandomLocalGif();
+                if (typeof window.showSaveGifButton === 'function') {
+                    window.showSaveGifButton();
+                }
+            };
+            
+            // Fallback in case onload doesn't fire
+            setTimeout(() => {
+                isLoadingGif = false;
+            }, 5000);
+        }).catch(error => {
+            console.error('Error loading GIF:', error);
+            isLoadingGif = false;
+            resultGif.src = getRandomLocalGif();
+            if (typeof window.showSaveGifButton === 'function') {
+                window.showSaveGifButton();
+            }
         });
     }
 }
@@ -94,7 +143,7 @@ async function precacheGifs() {
     }
 
     console.log('Online, starting GIF pre-caching...');
-    const PRECACHE_COUNT = 20;
+    const PRECACHE_COUNT = window.gifCacheCount || 20;
     let cachedGifUrls = [];
 
     try {

@@ -31,13 +31,13 @@
                     <option value="multiplikation">Multiplikation</option>
                     <option value="division">Division</option>
                 </select>
-                <label for="maxResult">Maximale Ergebniszahl:</label>
+                <label for="maxResult">Max Ergebnis:</label>
                 <select id="maxResult">
                     <option value="10">bis 10</option>
                     <option value="20">bis 20</option>
                     <option value="50">bis 50</option>
-                    <option value="80">bis 80</option>
                     <option value="100">bis 100</option>
+                    <option value="200">bis 200</option>
                 </select>
                 <button id="start-button">Start</button>
                 <button id="clear-highscore" class="danger-button">Highscore Liste löschen</button>
@@ -130,6 +130,15 @@
                     <option value="300" selected>5 Minuten (300s)</option>
                     <option value="600">10 Minuten (600s)</option>
                     <option value="900">15 Minuten (900s)</option>
+                </select>
+                <hr>
+                <h3>GIF Cache</h3>
+                <label for="gif-cache-count">Anzahl vorzuladender GIFs:</label>
+                <select id="gif-cache-count">
+                    <option value="10">10 GIFs</option>
+                    <option value="20" selected>20 GIFs</option>
+                    <option value="30">30 GIFs</option>
+                    <option value="50">50 GIFs</option>
                 </select>
                 <hr>
                 <h3>Galerie</h3>

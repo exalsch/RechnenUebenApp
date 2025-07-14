@@ -105,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.TENOR_API_KEY = localStorage.getItem('TENOR_API_KEY') || 'LIVDSRZULEJO'; // Default Key
 window.gifQueries = (localStorage.getItem('gifQueries') || "welpe;niedliche tiere;lustige tiere;Pfohlen").split(';');
 window.gameTime = parseInt(localStorage.getItem('gameTime')) || 300; // Default 5 minutes
+window.gifCacheCount = parseInt(localStorage.getItem('gifCacheCount')) || 20; // Default 20 GIFs
 
 function endGame() {
     clearInterval(timer);
