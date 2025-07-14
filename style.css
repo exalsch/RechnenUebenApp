@@ -96,6 +96,18 @@ input, select {
     font-size: 16px;
 }
 
+/* Hide number input spinner controls to prevent cheating */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 label {
     display: block;
     margin-top: 10px;

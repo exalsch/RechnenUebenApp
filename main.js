@@ -62,6 +62,13 @@ answerInput.addEventListener('keypress', function(event) {
     }
 });
 
+// Prevent arrow keys from incrementing/decrementing (anti-cheat)
+answerInput.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        event.preventDefault();
+    }
+});
+
 // Event-Listener für sofortige Überprüfung
 answerInput.addEventListener('input', function(event) {
     const userAnswer = parseInt(this.value);
