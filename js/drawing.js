@@ -1,9 +1,13 @@
 // Zeichenfunktionalität
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('drawing-canvas');
-    if (!canvas) return;
+    if (!canvas) {
+        console.error('Drawing canvas not found!');
+        return;
+    }
 
     const ctx = canvas.getContext('2d');
+    console.log('Drawing canvas initialized:', canvas);
     const clearDrawingBtn = document.getElementById('clear-drawing');
     const colorPicker = document.getElementById('color-picker');
     const lineWidthInput = document.getElementById('line-width');
@@ -23,8 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resizeCanvas() {
         const container = canvas.parentElement;
-        canvas.width = container.offsetWidth;
-        canvas.height = container.offsetHeight;
+        if (container) {
+            // Ensure we have valid dimensions
+            const width = container.offsetWidth || container.clientWidth || 300;
+            const height = container.offsetHeight || container.clientHeight || 200;
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            console.log('Canvas resized to:', width, 'x', height);
+        }
     }
 
     window.addEventListener('load', () => {
@@ -50,12 +62,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startDrawing(e) {
-        if (!window.isGameRunning) return;
+        if (!window.isGameRunning) {
+            console.log('Drawing disabled: game not running');
+            return;
+        }
         e.preventDefault();
         isDrawing = true;
         const pos = e.type === 'mousedown' ? getMousePos(e) : getTouchPos(e);
         lastX = pos.x;
         lastY = pos.y;
+        console.log('Start drawing at:', lastX, lastY);
     }
 
     function draw(e) {

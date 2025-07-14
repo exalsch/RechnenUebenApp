@@ -45,21 +45,39 @@
             </div>
             <div id="game" class="hidden">
                 <div id="question"></div>
-                <div class="drawing-section">
-                    <div id="drawing-controls">
-                        <button id="minimize-button" title="Minimieren">—</button>
-                        <button id="clear-drawing" title="Notiz löschen">🗑️</button>
-                        <button id="sound-toggle" class="sound-button">🔔</button>
-                        <div class="drawing-tools">
-                            <input type="color" id="color-picker" value="#000000" title="Farbe wählen">
-                            <input type="range" id="line-width" min="1" max="10" value="2" title="Strichstärke anpassen">
+                <div class="answer-section">
+                    <div class="answer-input-group">
+                        <input type="text" id="answer" placeholder="Deine Antwort">
+                        <button id="numpad-toggle" class="numpad-toggle-btn" title="Zahlenfeld ein/aus">⌨️</button>
+                    </div>
+                    <div id="custom-numpad" class="numpad hidden">
+                        <div class="numpad-row">
+                            <button class="numpad-btn" data-value="7">7</button>
+                            <button class="numpad-btn" data-value="8">8</button>
+                            <button class="numpad-btn" data-value="9">9</button>
+                        </div>
+                        <div class="numpad-row">
+                            <button class="numpad-btn" data-value="4">4</button>
+                            <button class="numpad-btn" data-value="5">5</button>
+                            <button class="numpad-btn" data-value="6">6</button>
+                        </div>
+                        <div class="numpad-row">
+                            <button class="numpad-btn" data-value="1">1</button>
+                            <button class="numpad-btn" data-value="2">2</button>
+                            <button class="numpad-btn" data-value="3">3</button>
+                        </div>
+                        <div class="numpad-row">
+                            <button class="numpad-btn" data-value="0">0</button>
+                            <button class="numpad-btn numpad-clear" data-action="clear">⌫</button>
+                            <button class="numpad-btn numpad-submit" data-action="submit">✓</button>
                         </div>
                     </div>
                 </div>
-                <input type="number" id="answer" placeholder="Deine Antwort">
-                <button id="submit-answer" title="Antwort einreichen">👍</button>
-                <button id="skip-question" title="Überspringen (-1 Punkt)">⏭️</button>
-                <button id="end-game" title="Beenden">🔚</button>
+                <div class="action-buttons">
+                    <button id="submit-answer" title="Antwort einreichen" class="hidden-mobile">👍</button>
+                    <button id="skip-question" title="Überspringen (-1 Punkt)">⏭️</button>
+                    <button id="end-game" title="Beenden">🔚</button>
+                </div>
                 <div id="score">Punkte: 0</div>
                 <div id="timer-container">
                     <div id="timer">⏲: 5:00</div>
@@ -76,6 +94,17 @@
                 <button id="restart-button">Neu starten</button>
             </div>
             <div id="score-list"></div>
+        </div>
+    </div>
+    <div class="drawing-section">
+        <div id="drawing-controls">
+            <button id="minimize-button" title="Minimieren">—</button>
+            <button id="clear-drawing" title="Notiz löschen">🗑️</button>
+            <button id="sound-toggle" class="sound-button">🔔</button>
+            <div class="drawing-tools">
+                <input type="color" id="color-picker" value="#000000" title="Farbe wählen">
+                <input type="range" id="line-width" min="1" max="10" value="2" title="Strichstärke anpassen">
+            </div>
         </div>
     </div>
     <div id="settings-modal" class="modal hidden">
@@ -132,6 +161,7 @@
     <script src="js/scores.js"></script>
     <script src="js/gif.js"></script>
     <script src="js/timer.js"></script>
+    <script src="js/numpad.js"></script>
     <script src="main.js"></script>
 </body>
 </html>

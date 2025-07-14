@@ -15,6 +15,7 @@ const urlsToCache = [
   '/js/scores.js',
   '/js/gif.js',
   '/js/timer.js',
+  '/js/numpad.js',
   '/manifest.json',
   '/sounds/correct.mp3',
   '/sounds/wrong.mp3',

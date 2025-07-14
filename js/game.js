@@ -52,7 +52,14 @@ function startGame() {
     const drawingControls = document.getElementById('drawing-controls');
     const drawingCanvas = document.getElementById('drawing-canvas');
     if (drawingControls) drawingControls.classList.add('game-active');
-    if (drawingCanvas) drawingCanvas.classList.add('game-active');
+    if (drawingCanvas) {
+        drawingCanvas.classList.add('game-active');
+        // Force canvas resize after game starts
+        setTimeout(() => {
+            const resizeEvent = new Event('resize');
+            window.dispatchEvent(resizeEvent);
+        }, 100);
+    }
     
     generateQuestion(operation);
     window.startTimer();

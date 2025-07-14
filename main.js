@@ -54,6 +54,7 @@ securitySubmitBtn.addEventListener('click', window.checkSecurityAnswer);
 saveSettingsBtn.addEventListener('click', window.saveSettings);
 
 
+// Keyboard event listeners
 // Event-Listener für die Enter-Taste
 answerInput.addEventListener('keypress', function(event) {
     if (event.key === 'Enter' && !isProcessingAnswer) {
@@ -71,6 +72,12 @@ answerInput.addEventListener('keydown', function(event) {
 
 // Event-Listener für sofortige Überprüfung
 answerInput.addEventListener('input', function(event) {
+    // Only allow numbers in the input
+    let value = this.value.replace(/[^0-9]/g, '');
+    if (value !== this.value) {
+        this.value = value;
+    }
+    
     const userAnswer = parseInt(this.value);
     if (!isNaN(userAnswer) && userAnswer === window.correctAnswer && !isProcessingAnswer) {
         window.checkAnswer();

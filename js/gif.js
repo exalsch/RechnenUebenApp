@@ -76,12 +76,13 @@ function handleGameEndGif() {
             } else {
                 resultGif.src = getRandomLocalGif();
             }
-            // Update save button state after GIF is loaded
-            setTimeout(() => {
+            
+            // Wait for image to load before updating save button
+            resultGif.onload = () => {
                 if (typeof window.showSaveGifButton === 'function') {
                     window.showSaveGifButton();
                 }
-            }, 100);
+            };
         });
     }
 }
