@@ -1,6 +1,6 @@
 
 
-let score = 0;
+window.score = 0;
 let timeLeft = 300;
 let timer;
 let correctAnswer;
@@ -94,17 +94,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.checkApiKeyWarning();
 });
 
-
-
-
-
-
-
-
 // Load settings from localStorage or use defaults
 window.playerName = localStorage.getItem('playerName') || ''; // Player name
 window.TENOR_API_KEY = localStorage.getItem('TENOR_API_KEY') || 'LIVDSRZULEJO'; // Default Key
-window.gifQueries = (localStorage.getItem('gifQueries') || "welpe;niedliche tiere;lustige tiere;Pfohlen").split(';');
+window.gifQueries = (localStorage.getItem('gifQueries') || "welpe;niedliche tiere;lustige tiere;Fohlen").split(';');
 window.gameTime = parseInt(localStorage.getItem('gameTime')) || 300; // Default 5 minutes
 window.gifCacheCount = parseInt(localStorage.getItem('gifCacheCount')) || 20; // Default 20 GIFs
 
@@ -115,8 +108,8 @@ function endGame() {
     
     // Generate encouraging message with player name
     const playerName = window.playerName || 'Spieler';
-    const encouragingMessage = getEncouragingMessage(playerName, score);
-    finalScoreDiv.innerHTML = `<strong>${encouragingMessage}</strong><br>Dein Punktestand: ${score}`;
+    const encouragingMessage = getEncouragingMessage(playerName, window.score);
+    finalScoreDiv.innerHTML = `<strong>${encouragingMessage}</strong><br>Dein Punktestand: ${window.score}`;
     
     // Deactivate drawing controls
     const drawingControls = document.getElementById('drawing-controls');
@@ -190,7 +183,7 @@ function getEncouragingMessage(playerName, score) {
 function restartGame() {
     // Clear game state
     clearInterval(timer);
-    score = 0;
+    window.score = 0;
     
     // Reset UI
     gameDiv.classList.add('hidden');
