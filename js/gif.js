@@ -68,11 +68,19 @@ async function fetchRandomGif() {
 }
 
 let isLoadingGif = false;
+let currentGifUrl = null;
 
 function handleGameEndGif() {
     const resultGif = document.getElementById('result-gif');
     
+    // Reset any existing state
+    if (currentGifUrl) {
+        console.log('GIF already displayed, not fetching new one');
+        return;
+    }
+    
     if (window.timeLeft > 0) {
+        // Game ended early - show sad emoji
         resultGif.style.fontSize = '48px';
         resultGif.style.display = 'block';
         resultGif.style.textAlign = 'center';
@@ -83,7 +91,9 @@ function handleGameEndGif() {
             window.hideSaveGifButton();
         }
         isLoadingGif = false;
+        currentGifUrl = 'early_end'; // Mark as handled
     } else {
+        // Game completed normally - show reward GIF
         if (isLoadingGif) {
             console.log('GIF already loading, skipping duplicate request');
             return;
@@ -95,13 +105,23 @@ function handleGameEndGif() {
         resultGif.style.textAlign = '';
         resultGif.innerText = '';
         
+        // Show loading placeholder
         resultGif.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         
         fetchRandomGif().then(async (gifUrl) => {
+            // Check if we're still supposed to be loading (prevent race conditions)
+            if (!isLoadingGif) {
+                console.log('GIF loading was cancelled, ignoring result');
+                return;
+            }
+            
             if (gifUrl) {
+                currentGifUrl = gifUrl;
                 resultGif.src = gifUrl;
             } else {
-                resultGif.src = getRandomLocalGif();
+                const localGif = getRandomLocalGif();
+                currentGifUrl = localGif;
+                resultGif.src = localGif;
             }
             
             // Wait for image to load before updating save button
@@ -114,8 +134,10 @@ function handleGameEndGif() {
             
             resultGif.onerror = () => {
                 console.log('Failed to load GIF, falling back to local');
+                const localGif = getRandomLocalGif();
+                currentGifUrl = localGif;
+                resultGif.src = localGif;
                 isLoadingGif = false;
-                resultGif.src = getRandomLocalGif();
                 if (typeof window.showSaveGifButton === 'function') {
                     window.showSaveGifButton();
                 }
@@ -123,16 +145,32 @@ function handleGameEndGif() {
             
             // Fallback in case onload doesn't fire
             setTimeout(() => {
-                isLoadingGif = false;
+                if (isLoadingGif) {
+                    console.log('GIF load timeout, assuming completed');
+                    isLoadingGif = false;
+                }
             }, 5000);
         }).catch(error => {
             console.error('Error loading GIF:', error);
+            const localGif = getRandomLocalGif();
+            currentGifUrl = localGif;
+            resultGif.src = localGif;
             isLoadingGif = false;
-            resultGif.src = getRandomLocalGif();
             if (typeof window.showSaveGifButton === 'function') {
                 window.showSaveGifButton();
             }
         });
+    }
+}
+
+// Reset GIF state when starting a new game
+function resetGifState() {
+    isLoadingGif = false;
+    currentGifUrl = null;
+    const resultGif = document.getElementById('result-gif');
+    if (resultGif) {
+        resultGif.onload = null;
+        resultGif.onerror = null;
     }
 }
 
@@ -186,4 +224,5 @@ window.getRandomLocalGif = getRandomLocalGif;
 window.getRandomOfflineGif = getRandomOfflineGif;
 window.fetchRandomGif = fetchRandomGif;
 window.handleGameEndGif = handleGameEndGif;
+window.resetGifState = resetGifState;
 window.precacheGifs = precacheGifs;

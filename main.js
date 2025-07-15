@@ -106,6 +106,9 @@ function endGame() {
     gameDiv.classList.add('hidden');
     resultDiv.classList.remove('hidden');
     
+    // Remove game-active class to show footer and ads again
+    document.body.classList.remove('game-active');
+    
     // Generate encouraging message with player name
     const playerName = window.playerName || 'Spieler';
     const encouragingMessage = getEncouragingMessage(playerName, window.score);
@@ -184,6 +187,14 @@ function restartGame() {
     // Clear game state
     clearInterval(timer);
     window.score = 0;
+    
+    // Remove game-active class to show footer and ads again
+    document.body.classList.remove('game-active');
+    
+    // Reset GIF state
+    if (typeof window.resetGifState === 'function') {
+        window.resetGifState();
+    }
     
     // Reset UI
     gameDiv.classList.add('hidden');

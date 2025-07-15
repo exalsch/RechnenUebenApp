@@ -5,14 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="/manifest.json">
-    <title>Mathe Lern App</title>
+    <title>Mathe trainer app</title>
 </head>
 <body>
+    <!-- Age Verification Modal -->
+    <div id="age-verification-modal" class="age-verification-modal">
+        <div class="age-verification-content">
+            <h2>📚 Altersverifikation</h2>
+            <p>Diese App wurde für Kinder entwickelt und folgt den deutschen Datenschutzbestimmungen.</p>
+            <p><strong>Bist du unter 16 Jahre alt?</strong></p>
+            <div class="age-buttons">
+                <button class="age-button under-16" onclick="handleAgeVerification(true)">
+                    Ja, ich bin unter 16
+                </button>
+                <button class="age-button over-16" onclick="handleAgeVerification(false)">
+                    Nein, ich bin 16 oder älter
+                </button>
+            </div>
+            <p style="font-size: 12px; color: #666; margin-top: 15px;">
+                Kinder unter 16 Jahren benötigen die Erlaubnis ihrer Eltern zur Nutzung.
+            </p>
+        </div>
+    </div>
+
+    <!-- Data Storage Info Banner -->
+    <div id="consent-banner" class="consent-banner hidden">
+        <p>
+            Diese App speichert Spielstände nur lokal auf deinem Gerät. Keine Cookies, keine Server-Übertragung.
+            <a href="privacy.html" target="_blank">Datenschutzerklärung</a>
+        </p>
+        <button onclick="acceptConsent()">Verstanden</button>
+    </div>
+
     <div class="container">
         <canvas id="drawing-canvas"></canvas>
         <div class="content">
+            <!-- AdSense Container -->
+            <div id="ad-container" class="ad-container hidden">
+                <div class="ad-label">Werbung</div>
+                <!-- Add your AdSense code here -->
+                <!-- Example AdSense code (replace with your actual publisher ID and ad slot): -->
+                <!--
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR-PUBLISHER-ID" crossorigin="anonymous"></script>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-YOUR-PUBLISHER-ID"
+                     data-ad-slot="YOUR-AD-SLOT"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                    // Configure AdSense for child-directed treatment
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                -->
+                <div style="background-color: #f0f0f0; padding: 20px; text-align: center; border-radius: 5px;">
+                    <p style="color: #666; margin: 0;">Werbeplatz</p>
+                    <small style="color: #999;">Hier würde Ihre AdSense-Werbung erscheinen</small>
+                </div>
+            </div>
+            
             <div class="header">
-                <h1>Mathe Lern App</h1>
+                <h1>Mathe trainer app</h1>
                 <div id="api-key-warning" class="warning hidden"></div>
                 <button id="settings-button" class="settings-button" title="Einstellungen">⚙️</button>
             </div>
@@ -96,6 +149,18 @@
             <div id="score-list"></div>
         </div>
     </div>
+    
+    <!-- Legal Footer -->
+    <footer class="legal-footer">
+        <div class="footer-links">
+            <a href="about.html">Über diese App</a>
+            <a href="privacy.html">Datenschutz</a>
+            <a href="impressum.html">Impressum</a>
+        </div>
+        <div class="footer-info">
+            <p>© 2025 Mathe trainer app - Entwickelt mit ❤️ für Kinder</p>
+        </div>
+    </footer>
     <div class="drawing-section">
         <div id="drawing-controls">
             <button id="minimize-button" title="Minimieren">—</button>
@@ -121,8 +186,18 @@
                 <label for="player-name">Spielername:</label>
                 <input type="text" id="player-name" placeholder="Dein Name" maxlength="20">
                 <hr>
-                <label for="tenor-api-key">Tenor API Key:</label>
-                <input type="text" id="tenor-api-key" placeholder="Dein TENOR API Key">
+                <div class="api-key-section">
+                    <label for="tenor-api-key">
+                        Tenor API Key:
+                        <button type="button" class="help-icon" onclick="showTenorHelp()" title="Hilfe zum Tenor API Key">❓</button>
+                    </label>
+                    <input type="text" id="tenor-api-key" placeholder="Dein TENOR API Key">
+                    <div class="api-links">
+                        <a href="https://console.cloud.google.com/apis/library/tenor.googleapis.com" target="_blank" class="api-link">
+                            🔗 Tenor API aktivieren
+                        </a>
+                    </div>
+                </div>
                 <label for="gif-queries">GIF Suchbegriffe (getrennt durch ;):</label>
                 <input type="text" id="gif-queries" placeholder="z.B. welpe;lustige tiere">
                 <hr>
@@ -165,6 +240,48 @@
             </div>
         </div>
     </div>
+    
+    <!-- Tenor API Help Modal -->
+    <div id="tenor-help-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeTenorHelp()">&times;</span>
+            <h2>🎬 Tenor API Key einrichten</h2>
+            <div class="help-content">
+                <h3>Schritt 1: Google Cloud Console</h3>
+                <p>1. Gehe zur <a href="https://console.cloud.google.com/apis/library/tenor.googleapis.com" target="_blank">Google Cloud Console</a></p>
+                <p>2. Melde dich mit deinem Google-Konto an</p>
+                <p>3. Erstelle ein neues Projekt oder wähle ein bestehendes aus</p>
+                
+                <h3>Schritt 2: Tenor API aktivieren</h3>
+                <p>1. Klicke auf "Aktivieren" für die Tenor API</p>
+                <p>2. Warte, bis die Aktivierung abgeschlossen ist</p>
+                
+                <h3>Schritt 3: API-Schlüssel erstellen</h3>
+                <p>1. Gehe zu "APIs & Services" → "Anmeldedaten"</p>
+                <p>2. Klicke auf "+ Anmeldedaten erstellen"</p>
+                <p>3. Wähle "API-Schlüssel" aus</p>
+                <p>4. Kopiere den generierten Schlüssel</p>
+                
+                <h3>Schritt 4: API-Schlüssel einschränken (empfohlen)</h3>
+                <p>1. Klicke auf "Schlüssel einschränken"</p>
+                <p>2. Wähle "HTTP-Verweis (Websites)" aus</p>
+                <p>3. Füge deine Domain hinzu (z.B. example.com/*)</p>
+                <p>4. Unter "API-Einschränkungen" wähle "Tenor API" aus</p>
+                
+                <h3>Schritt 5: Schlüssel einsetzen</h3>
+                <p>1. Kopiere den API-Schlüssel in das Feld oben</p>
+                <p>2. Klicke auf "Einstellungen speichern"</p>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ Wichtig:</strong> Teile deinen API-Schlüssel niemals öffentlich! Schränke ihn auf deine Domain ein.</p>
+                </div>
+                
+                <div class="info-box">
+                    <p><strong>💡 Tipp:</strong> Die Tenor API ist für private Nutzung kostenlos. Für kommerzielle Nutzung können Gebühren anfallen.</p>
+                </div>
+            </div>
+        </div>
+    </div>
             <script src="js/sound.js"></script>
         <script src="js/gallery.js"></script>
     <script src="js/drawing.js"></script>
@@ -174,6 +291,8 @@
     <script src="js/gif.js"></script>
     <script src="js/timer.js"></script>
     <script src="js/numpad.js"></script>
+    <script src="js/legal-compliance.js"></script>
+    <script src="js/contact-protection.js"></script>
     <script src="main.js"></script>
 </body>
 </html>

@@ -1,8 +1,8 @@
-# App Description: Mathe Lern App (Mobile)
+# App Description: Mathe trainer app (Mobile)
 
 ## 1. Application Overview
 
-The "Mathe Lern App" is an educational **mobile application** designed to help users practice basic arithmetic skills. It is designed to be **fully functional offline**, making it a reliable learning tool anywhere, anytime.
+The "Mathe trainer app" is an educational **mobile application** designed to help users practice basic arithmetic skills. It is designed to be **fully functional offline**, making it a reliable learning tool anywhere, anytime.
 
 Users can select different types of calculations, adjust difficulty, and receive immediate feedback. The app includes gamification elements like a timer, scoring, and a highscore list. A key feature is the integrated drawing canvas, which allows users to work through problems on-screen.
 

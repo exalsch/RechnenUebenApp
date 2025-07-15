@@ -1,8 +1,8 @@
-# App Description: Mathe Lern App
+# App Description: Mathe trainer app
 
 ## 1. Application Overview
 
-The "Mathe Lern App" is an educational web application designed to help users practice basic arithmetic skills. Users can select different types of calculations (addition, subtraction, multiplication, division) and adjust the difficulty by setting a maximum result value. The app provides immediate feedback, tracks scores, and includes gamification elements like a timer and a highscore list to motivate the user.
+The "Mathe trainer app" is an educational web application designed to help users practice basic arithmetic skills. Users can select different types of calculations (addition, subtraction, multiplication, division) and adjust the difficulty by setting a maximum result value. The app provides immediate feedback, tracks scores, and includes gamification elements like a timer and a highscore list to motivate the user.
 
 A key feature is the integrated drawing canvas, which allows users to write down calculations and notes, simulating a scratchpad.
 

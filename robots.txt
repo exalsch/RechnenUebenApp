@@ -1,0 +1,64 @@
+# Robots.txt for Mathe trainer app
+# Math Learning App for Children - Educational Purpose
+
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /about.html
+Allow: /privacy.html
+Allow: /impressum.html
+Allow: /style.css
+Allow: /manifest.json
+Allow: /img/
+Allow: /js/
+
+# Prevent crawling of sensitive contact data
+Disallow: /js/contact-protection.js
+
+# Prevent crawling of settings and API keys
+Disallow: /js/settings.js
+Disallow: /js/legal-compliance.js
+
+# Prevent crawling of user data files
+Disallow: /js/scores.js
+Disallow: /js/gallery.js
+
+# Allow crawling of educational content
+Allow: /js/game.js
+Allow: /js/drawing.js
+Allow: /js/sound.js
+Allow: /js/timer.js
+
+# Block common exploit attempts
+Disallow: /admin/
+Disallow: /administrator/
+Disallow: /wp-admin/
+Disallow: /wp-content/
+Disallow: /wp-includes/
+Disallow: /cgi-bin/
+Disallow: /.git/
+Disallow: /.env
+Disallow: /config/
+Disallow: /backup/
+Disallow: /logs/
+Disallow: /tmp/
+Disallow: /cache/
+
+# Block file types that shouldn't be indexed
+Disallow: /*.json$
+Disallow: /*.log$
+Disallow: /*.tmp$
+Disallow: /*.bak$
+Disallow: /*.old$
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Sitemap location (add when you create one)
+# Sitemap: https://yourdomain.com/sitemap.xml
+
+# Educational app - child-friendly content
+# This is a German educational math app for elementary school children
+# Focus on basic arithmetic operations: addition, subtraction, multiplication, division
+# All user data is stored locally - no server-side data collection
+# GDPR compliant - no cookies, no tracking, no data sharing

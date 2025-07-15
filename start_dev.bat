@@ -1,5 +1,5 @@
 @echo off
-REM Dieses Skript startet die Entwicklungsumgebung für die Mathe Lern App.
+REM Dieses Skript startet die Entwicklungsumgebung für die Mathe trainer app.
 
 REM Schritt 1: Prüfen, ob ngrok installiert ist.
 where ngrok >nul 2>nul

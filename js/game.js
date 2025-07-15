@@ -48,6 +48,9 @@ function startGame() {
     document.getElementById('settings-button').classList.add('hidden');
     document.getElementById('score-list').classList.add('hidden');
     
+    // Add game-active class to body to hide footer and ads
+    document.body.classList.add('game-active');
+    
     // Activate drawing controls
     const drawingControls = document.getElementById('drawing-controls');
     const drawingCanvas = document.getElementById('drawing-canvas');

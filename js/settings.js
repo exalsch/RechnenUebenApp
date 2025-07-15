@@ -124,3 +124,15 @@ window.closeSettingsModal = closeSettingsModal;
 window.generateSecurityQuestion = generateSecurityQuestion;
 window.checkSecurityAnswer = checkSecurityAnswer;
 window.saveSettings = saveSettings;
+
+// Tenor API Help Modal Functions
+function showTenorHelp() {
+    document.getElementById('tenor-help-modal').classList.remove('hidden');
+}
+
+function closeTenorHelp() {
+    document.getElementById('tenor-help-modal').classList.add('hidden');
+}
+
+window.showTenorHelp = showTenorHelp;
+window.closeTenorHelp = closeTenorHelp;

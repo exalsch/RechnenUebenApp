@@ -1,4 +1,4 @@
-# Mathe Lern App
+# Mathe trainer app
 
 Dies ist eine einfache Web-App, um Grundrechenarten zu üben. Als Belohnung für richtige Antworten werden zufällige, lustige GIFs von Tenor angezeigt. Die App ist als Progressive Web App (PWA) konzipiert, was bedeutet, dass sie auf einem Gerät (z.B. einem Smartphone) installiert und auch offline genutzt werden kann.
 
