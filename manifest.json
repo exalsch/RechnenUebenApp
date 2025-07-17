@@ -1,5 +1,6 @@
 {
   "name": "Rechnen Üben App",
+  "id": "de.schicka.rechnen.ueben.app",
   "short_name": "Rechnen",
   "description": "Eine einfache App zum Üben von Grundrechenarten mit lustigen GIF-Belohnungen.",
   "start_url": "/index.html",
@@ -17,7 +18,26 @@
       "src": "img/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon-512x512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": ["focus-existing", "navigate-new"]
+  },
+  "orientation": "portrait-primary",
+  "screenshots": [
+    {
+      "src": "img/screenshot.png",
+      "sizes": "881x599",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Homescreen of the Math Practice App"
     }
   ]
 }
