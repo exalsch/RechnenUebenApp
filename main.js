@@ -1,8 +1,6 @@
 
 
 window.score = 0;
-let timeLeft = 300;
-let timer;
 let correctAnswer;
 let maxResult;
 let isProcessingAnswer = false; // Prevent multiple simultaneous submissions
@@ -86,12 +84,36 @@ answerInput.addEventListener('input', function(event) {
 
 
 // Add event listener for operation change
-document.getElementById('operation').addEventListener('change', window.updateMaxResultOptions);
+document.getElementById('operation').addEventListener('change', () => {
+    window.updateMaxResultOptions();
+    // Update and show highscores for the selected operation
+    if (typeof window.displayScores === 'function') {
+        window.displayScores();
+    }
+    if (scoreList) {
+        scoreList.classList.remove('hidden');
+    }
+});
 
 // Initialize maxResult options on page load
 document.addEventListener('DOMContentLoaded', () => {
     window.updateMaxResultOptions();
     window.checkApiKeyWarning();
+    // Show highscores initially for the default operation
+    if (typeof window.displayScores === 'function') {
+        window.displayScores();
+    }
+    if (scoreList) {
+        scoreList.classList.remove('hidden');
+    }
+    // Apply skip visibility based on setting
+    if (typeof window.disableSkip !== 'undefined') {
+        if (window.disableSkip) {
+            skipButton.classList.add('hidden');
+        } else {
+            skipButton.classList.remove('hidden');
+        }
+    }
 });
 
 // Load settings from localStorage or use defaults
@@ -100,9 +122,18 @@ window.TENOR_API_KEY = localStorage.getItem('TENOR_API_KEY') || 'LIVDSRZULEJO'; 
 window.gifQueries = (localStorage.getItem('gifQueries') || "welpe;niedliche tiere;lustige tiere;Fohlen").split(';');
 window.gameTime = parseInt(localStorage.getItem('gameTime')) || 300; // Default 5 minutes
 window.gifCacheCount = parseInt(localStorage.getItem('gifCacheCount')) || 20; // Default 20 GIFs
+window.disableSkip = (localStorage.getItem('disableSkip') === '1');
+
+// Reflect skip setting immediately on load
+if (window.disableSkip) {
+    skipButton.classList.add('hidden');
+} else {
+    skipButton.classList.remove('hidden');
+}
 
 function endGame() {
-    clearInterval(timer);
+    // Ensure any running timer is stopped
+    clearInterval(window.timer);
     gameDiv.classList.add('hidden');
     resultDiv.classList.remove('hidden');
     
@@ -185,7 +216,7 @@ function getEncouragingMessage(playerName, score) {
 
 function restartGame() {
     // Clear game state
-    clearInterval(timer);
+    clearInterval(window.timer);
     window.score = 0;
     
     // Remove game-active class to show footer and ads again
@@ -199,7 +230,8 @@ function restartGame() {
     // Reset UI
     gameDiv.classList.add('hidden');
     resultDiv.classList.add('hidden');
-    scoreList.classList.add('hidden');
+    // Show highscores again in settings view
+    scoreList.classList.remove('hidden');
     settings.classList.remove('hidden');
     settingsButton.classList.remove('hidden');
     

@@ -33,7 +33,9 @@ function getOperationName(operation) {
 function startGame() {
     const operation = document.getElementById('operation').value;
     window.maxResult = parseInt(document.getElementById('maxResult').value);
-    
+    // Reset answer processing guard at the start of each game
+    window.isProcessingAnswer = false;
+
     // Validate selected maxResult against operation limits
     const limits = operationLimits[operation];
     if (window.maxResult < limits.min || window.maxResult > limits.max) {
@@ -43,6 +45,7 @@ function startGame() {
     
     window.score = 0;
     window.timeLeft = window.gameTime || 300;
+
     document.getElementById('game').classList.remove('hidden');
     document.getElementById('settings').classList.add('hidden');
     document.getElementById('settings-button').classList.add('hidden');
@@ -223,6 +226,10 @@ function checkAnswer() {
 }
 
 function skipQuestion() {
+    // Respect setting to disable skipping
+    if (window.disableSkip) {
+        return;
+    }
     window.score = Math.max(0, window.score - 1);
     window.playSound(window.wrongSound);
     document.getElementById('score').innerText = `Punkte: ${window.score}`;

@@ -72,6 +72,10 @@ function checkSecurityAnswer() {
         document.getElementById('gif-queries').value = window.gifQueries.join(';');
         document.getElementById('game-time').value = window.gameTime || 300;
         document.getElementById('gif-cache-count').value = window.gifCacheCount || 20;
+        const disableSkipEl = document.getElementById('disable-skip');
+        if (disableSkipEl) {
+            disableSkipEl.checked = !!window.disableSkip;
+        }
     } else {
         alert('Falsche Antwort. Bitte versuche es erneut.');
         generateSecurityQuestion();
@@ -85,6 +89,7 @@ function saveSettings() {
     const queries = document.getElementById('gif-queries').value.trim();
     const gameTime = parseInt(document.getElementById('game-time').value);
     const gifCacheCount = parseInt(document.getElementById('gif-cache-count').value);
+    const disableSkip = !!document.getElementById('disable-skip')?.checked;
 
     if (!window.TENOR_API_KEY) {
         alert('Der API Key darf nicht leer sein.');
@@ -107,11 +112,23 @@ function saveSettings() {
     window.gifQueries = queries.split(';').map(q => q.trim()).filter(q => q);
     window.gameTime = gameTime;
     window.gifCacheCount = gifCacheCount;
+    window.disableSkip = disableSkip;
     localStorage.setItem('playerName', playerName);
     localStorage.setItem('TENOR_API_KEY', window.TENOR_API_KEY);
     localStorage.setItem('gifQueries', window.gifQueries.join(';'));
     localStorage.setItem('gameTime', gameTime.toString());
     localStorage.setItem('gifCacheCount', gifCacheCount.toString());
+    localStorage.setItem('disableSkip', disableSkip ? '1' : '0');
+
+    // Reflect immediately in UI
+    const skipBtn = document.getElementById('skip-question');
+    if (skipBtn) {
+        if (disableSkip) {
+            skipBtn.classList.add('hidden');
+        } else {
+            skipBtn.classList.remove('hidden');
+        }
+    }
 
     alert('Einstellungen gespeichert!');
     closeSettingsModal();

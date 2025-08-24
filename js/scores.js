@@ -13,12 +13,16 @@ function displayScores() {
     const operation = document.getElementById('operation').value;
     let scores = JSON.parse(localStorage.getItem(`scores_${operation}`) || '[]');
     
-    scores.sort((a, b) => new Date(a.date) - new Date(b.date));
+    // Neueste zuerst sortieren und Top 10 anzeigen
+    scores.sort((a, b) => new Date(b.date) - new Date(a.date));
     
-    scores = scores.slice(-10);
+    scores = scores.slice(0, 10);
     
     const scoreList = document.getElementById('score-list');
-    scoreList.innerHTML = '<h3>Letzte 10 Runden:</h3>';
+    const opTitle = (typeof window.getOperationName === 'function')
+        ? window.getOperationName(operation)
+        : operation;
+    scoreList.innerHTML = `<h3>Letzte 10 Runden – ${opTitle}</h3>`;
     
     scores.forEach(entry => {
         const date = new Date(entry.date);
@@ -32,7 +36,15 @@ function displayScores() {
 
 function clearHighscores() {
     if (confirm('Möchtest du wirklich alle Highscores löschen?')) {
-        localStorage.removeItem('scores');
+        // Remove all keys that match scores_*
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('scores_')) {
+                keysToRemove.push(key);
+            }
+        }
+        keysToRemove.forEach(k => localStorage.removeItem(k));
         displayScores();
     }
 }
