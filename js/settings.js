@@ -67,7 +67,7 @@ function checkSecurityAnswer() {
     if (userAnswer === securityQuestionAnswer) {
         document.getElementById('security-check').classList.add('hidden');
         document.getElementById('settings-content').classList.remove('hidden');
-        document.getElementById('player-name').value = window.playerName || '';
+        document.getElementById('player-name').value = window.playerName || 'Schlaubi';
         document.getElementById('tenor-api-key').value = window.TENOR_API_KEY;
         document.getElementById('gif-queries').value = window.gifQueries.join(';');
         document.getElementById('game-time').value = window.gameTime || 300;

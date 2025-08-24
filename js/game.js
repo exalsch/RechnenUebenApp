@@ -30,16 +30,26 @@ function getOperationName(operation) {
     return operationNames[operation] || operation;
 }
 
+// Guard-Flag, um Mehrfachstarts (z.B. Doppelklick) zu verhindern
+window.isStartingGame = window.isStartingGame || false;
+
 function startGame() {
     const operation = document.getElementById('operation').value;
     window.maxResult = parseInt(document.getElementById('maxResult').value);
     // Reset answer processing guard at the start of each game
     window.isProcessingAnswer = false;
 
+    // Verhindere parallele Starts (z.B. schneller Doppelklick auf Start)
+    if (window.isGameRunning || window.isStartingGame) {
+        return;
+    }
+    window.isStartingGame = true;
+
     // Validate selected maxResult against operation limits
     const limits = operationLimits[operation];
     if (window.maxResult < limits.min || window.maxResult > limits.max) {
         alert(`Für ${getOperationName(operation)} muss die maximale Ergebniszahl zwischen ${limits.min} und ${limits.max} liegen.`);
+        window.isStartingGame = false;
         return;
     }
     
@@ -67,10 +77,13 @@ function startGame() {
         }, 100);
     }
     
+    // Markiere Spielzustand als laufend, bevor Timer gestartet wird
+    window.isGameRunning = true;
     generateQuestion(operation);
     window.startTimer();
     window.displayScores();
-    window.isGameRunning = true;
+    // Startphase abgeschlossen
+    window.isStartingGame = false;
 }
 
 function generateQuestion(operation) {
