@@ -3,7 +3,7 @@
 window.score = 0;
 let correctAnswer;
 let maxResult;
-let isProcessingAnswer = false; // Prevent multiple simultaneous submissions
+window.isProcessingAnswer = false; // Prevent multiple simultaneous submissions (global flag)
 
 const startButton = document.getElementById('start-button');
 const gameDiv = document.getElementById('game');
@@ -55,7 +55,7 @@ saveSettingsBtn.addEventListener('click', window.saveSettings);
 // Keyboard event listeners
 // Event-Listener für die Enter-Taste
 answerInput.addEventListener('keypress', function(event) {
-    if (event.key === 'Enter' && !isProcessingAnswer) {
+    if (event.key === 'Enter' && !window.isProcessingAnswer) {
         event.preventDefault(); // Prevent default form submission
         window.checkAnswer();
     }
@@ -77,7 +77,7 @@ answerInput.addEventListener('input', function(event) {
     }
     
     const userAnswer = parseInt(this.value);
-    if (!isNaN(userAnswer) && userAnswer === window.correctAnswer && !isProcessingAnswer) {
+    if (!isNaN(userAnswer) && userAnswer === window.correctAnswer && !window.isProcessingAnswer) {
         window.checkAnswer();
     }
 });
@@ -134,6 +134,8 @@ if (window.disableSkip) {
 function endGame() {
     // Ensure any running timer is stopped
     clearInterval(window.timer);
+    // Snapshot the score immediately to avoid any late resets/races
+    const finalScore = window.score;
     gameDiv.classList.add('hidden');
     resultDiv.classList.remove('hidden');
     
@@ -142,8 +144,8 @@ function endGame() {
     
     // Generate encouraging message with player name
     const playerName = window.playerName || 'Spieler';
-    const encouragingMessage = getEncouragingMessage(playerName, window.score);
-    finalScoreDiv.innerHTML = `<strong>${encouragingMessage}</strong><br>Dein Punktestand: ${window.score}`;
+    const encouragingMessage = getEncouragingMessage(playerName, finalScore);
+    finalScoreDiv.innerHTML = `<strong>${encouragingMessage}</strong><br>Dein Punktestand: ${finalScore}`;
     
     // Deactivate drawing controls
     const drawingControls = document.getElementById('drawing-controls');
@@ -153,7 +155,7 @@ function endGame() {
     
     window.handleGameEndGif();
     
-    window.saveScore();
+    window.saveScore(finalScore);
     window.displayScores();
     window.isGameRunning = false;
 }

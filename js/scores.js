@@ -1,8 +1,9 @@
-function saveScore() {
+function saveScore(scoreOverride) {
     const operation = document.getElementById('operation').value;
     let scores = JSON.parse(localStorage.getItem(`scores_${operation}`) || '[]');
+    const scoreValue = (typeof scoreOverride === 'number' && !isNaN(scoreOverride)) ? scoreOverride : window.score;
     scores.push({
-        score: window.score,
+        score: scoreValue,
         maxResult: window.maxResult,
         date: new Date().toISOString()
     });

@@ -60,8 +60,23 @@ self.addEventListener('activate', event => {
 
 // Anfragen abfangen: Zuerst aus dem Cache bedienen, dann vom Netzwerk holen und zwischenspeichern
 self.addEventListener('fetch', event => {
+  const request = event.request;
+
+  // Nur HTTP(S)-GET-Anfragen cachen. Verhindert Fehler mit z.B. chrome-extension://
+  if (request.method !== 'GET') {
+    return; // Standard-Netzwerkverhalten beibehalten
+  }
+  const url = new URL(request.url);
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    return; // Nicht unterstützte Protokolle nicht abfangen
+  }
+  // Workaround für Chrome/Lighthouse: "only-if-cached" darf nur mit same-origin verwendet werden
+  if (request.cache === 'only-if-cached' && request.mode !== 'same-origin') {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
+    caches.match(request)
       .then(response => {
         // Cache-Treffer - Antwort aus dem Cache zurückgeben
         if (response) {
@@ -69,7 +84,7 @@ self.addEventListener('fetch', event => {
         }
 
         // Nicht im Cache - vom Netzwerk holen
-        return fetch(event.request).then(
+        return fetch(request).then(
           networkResponse => {
             // Prüfen, ob wir eine gültige Antwort erhalten haben
             if(!networkResponse || networkResponse.status !== 200 || (networkResponse.type !== 'basic' && networkResponse.type !== 'cors')) {
@@ -84,7 +99,7 @@ self.addEventListener('fetch', event => {
             // Die neue Antwort für die zukünftige Verwendung zwischenspeichern
             caches.open(DYNAMIC_CACHE_NAME)
               .then(cache => {
-                cache.put(event.request, responseToCache);
+                cache.put(request, responseToCache).catch(() => {});
               });
 
             return networkResponse;
