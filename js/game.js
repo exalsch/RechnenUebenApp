@@ -10,6 +10,7 @@ const operationLimits = {
     'subtraktion-simple-carry': { min: 20, max: 100 },
     'subtraktion-carry': { min: 20, max: 100 },
     'multiplikation': { min: 20, max: 100 },
+    'multi-divi': { min: 20, max: 100 },
     'division': { min: 10, max: 100 }
 };
 
@@ -25,6 +26,7 @@ function getOperationName(operation) {
         'subtraktion-simple-carry': 'Subtraktion (Übertrag einfach)',
         'subtraktion-carry': 'Subtraktion (mit Übertrag)',
         'multiplikation': 'Multiplikation',
+        'multi-divi': 'Multiplikation & Division (Umkehraufgabe)',
         'division': 'Division'
     };
     return operationNames[operation] || operation;
@@ -38,6 +40,12 @@ function startGame() {
     window.maxResult = parseInt(document.getElementById('maxResult').value);
     // Reset answer processing guard at the start of each game
     window.isProcessingAnswer = false;
+
+    // Reset state for multi-divi mode so that a new round starts with multiplication
+    if (operation === 'multi-divi') {
+        window.multiDiviNextIsDivision = false;
+        window.multiDiviLast = null;
+    }
 
     // Verhindere parallele Starts (z.B. schneller Doppelklick auf Start)
     if (window.isGameRunning || window.isStartingGame) {
@@ -89,6 +97,7 @@ function startGame() {
 function generateQuestion(operation) {
     let num1, num2, operator;
     window.maxResult = parseInt(document.getElementById('maxResult').value);
+    let forceSymbol = null; // allow custom symbol for mixed flow like multi-divi
 
     if (operation === 'mixed-simple' || operation === 'mixed-carry') {
         const isAddition = Math.random() < 0.5;
@@ -103,6 +112,43 @@ function generateQuestion(operation) {
     do {
         attempts++;
         switch (operation) {
+            case 'multi-divi':
+                // Alternating: first a multiplication, then its inverse division
+                if (window.multiDiviNextIsDivision && window.multiDiviLast) {
+                    // Create division from last multiplication
+                    const { a, b, product } = window.multiDiviLast;
+                    num1 = product;
+                    num2 = a; // product : a = b
+                    window.correctAnswer = b;
+                    forceSymbol = ':';
+                    // Reset for next pair
+                    window.multiDiviNextIsDivision = false;
+                } else {
+                    // Generate a multiplication ensuring product <= maxResult
+                    let a, b, product;
+                    const maxAttemptsMD = 50;
+                    let tries = 0;
+                    do {
+                        tries++;
+                        if (window.excludeOneMultiplication) {
+                            a = Math.floor(Math.random() * 9) + 2; // 2..10
+                            b = Math.floor(Math.random() * 9) + 2; // 2..10
+                        } else {
+                            a = Math.floor(Math.random() * 10) + 1; // 1..10
+                            b = Math.floor(Math.random() * 10) + 1; // 1..10
+                        }
+                        product = a * b;
+                        if (tries >= maxAttemptsMD) break;
+                    } while (product > window.maxResult);
+                    num1 = a;
+                    num2 = b;
+                    window.correctAnswer = product;
+                    forceSymbol = '⋅';
+                    // Store for next division step
+                    window.multiDiviLast = { a, b, product };
+                    window.multiDiviNextIsDivision = true;
+                }
+                break;
             case 'addition':
                 num1 = Math.floor(Math.random() * (window.maxResult / 2));
                 num2 = Math.floor(Math.random() * (window.maxResult - num1));
@@ -190,8 +236,13 @@ function generateQuestion(operation) {
         'subtraktion-simple-carry': '-',
         'subtraktion-carry': '-',
         'multiplikation': '⋅',
-        'division': '/'
+        'division': ':',
+        'multi-divi': '⋅'
     }[operation];
+
+    if (forceSymbol) {
+        operationSymbol = forceSymbol;
+    }
 
     document.getElementById('question').innerText = `${num1} ${operationSymbol} ${num2}`;
     document.getElementById('answer').value = '';
