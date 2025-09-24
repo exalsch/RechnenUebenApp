@@ -123,6 +123,7 @@ window.gifQueries = (localStorage.getItem('gifQueries') || "welpe;niedliche tier
 window.gameTime = parseInt(localStorage.getItem('gameTime')) || 300; // Default 5 minutes
 window.gifCacheCount = parseInt(localStorage.getItem('gifCacheCount')) || 20; // Default 20 GIFs
 window.disableSkip = (localStorage.getItem('disableSkip') === '1');
+window.excludeOneMultiplication = (localStorage.getItem('excludeOneMultiplication') === '1');
 
 // Reflect skip setting immediately on load
 if (window.disableSkip) {

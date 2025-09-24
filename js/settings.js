@@ -76,6 +76,10 @@ function checkSecurityAnswer() {
         if (disableSkipEl) {
             disableSkipEl.checked = !!window.disableSkip;
         }
+        const excludeOneEl = document.getElementById('exclude-one-multiplication');
+        if (excludeOneEl) {
+            excludeOneEl.checked = !!window.excludeOneMultiplication;
+        }
     } else {
         alert('Falsche Antwort. Bitte versuche es erneut.');
         generateSecurityQuestion();
@@ -90,6 +94,7 @@ function saveSettings() {
     const gameTime = parseInt(document.getElementById('game-time').value);
     const gifCacheCount = parseInt(document.getElementById('gif-cache-count').value);
     const disableSkip = !!document.getElementById('disable-skip')?.checked;
+    const excludeOneMultiplication = !!document.getElementById('exclude-one-multiplication')?.checked;
 
     if (!window.TENOR_API_KEY) {
         alert('Der API Key darf nicht leer sein.');
@@ -113,12 +118,14 @@ function saveSettings() {
     window.gameTime = gameTime;
     window.gifCacheCount = gifCacheCount;
     window.disableSkip = disableSkip;
+    window.excludeOneMultiplication = excludeOneMultiplication;
     localStorage.setItem('playerName', playerName);
     localStorage.setItem('TENOR_API_KEY', window.TENOR_API_KEY);
     localStorage.setItem('gifQueries', window.gifQueries.join(';'));
     localStorage.setItem('gameTime', gameTime.toString());
     localStorage.setItem('gifCacheCount', gifCacheCount.toString());
     localStorage.setItem('disableSkip', disableSkip ? '1' : '0');
+    localStorage.setItem('excludeOneMultiplication', excludeOneMultiplication ? '1' : '0');
 
     // Reflect immediately in UI
     const skipBtn = document.getElementById('skip-question');

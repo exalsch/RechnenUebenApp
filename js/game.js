@@ -155,8 +155,14 @@ function generateQuestion(operation) {
                 window.correctAnswer = num1 - num2;
                 break;
             case 'multiplikation':
-                num1 = Math.floor(Math.random() * 10) + 1;
-                num2 = Math.floor(Math.random() * 10) + 1;
+                if (window.excludeOneMultiplication) {
+                    // Exclude 1 as a factor on both sides
+                    num1 = Math.floor(Math.random() * 9) + 2; // 2..10
+                    num2 = Math.floor(Math.random() * 9) + 2; // 2..10
+                } else {
+                    num1 = Math.floor(Math.random() * 10) + 1; // 1..10
+                    num2 = Math.floor(Math.random() * 10) + 1; // 1..10
+                }
                 window.correctAnswer = num1 * num2;
                 break;
             case 'division':
