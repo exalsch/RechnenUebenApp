@@ -28,7 +28,7 @@ body {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 button {
@@ -138,7 +138,25 @@ label {
     max-width: 200px;
     margin: 20px auto;
     border-radius: 10px;
+    display: none; /* erst anzeigen, wenn valides src vorhanden ist */
+}
+
+/* Verhindert defektes Bild-Icon, wenn kein/leereres src vorhanden ist */
+#result-gif:not([src]),
+#result-gif[src=""] {
+    display: none !important;
+}
+
+/* Wenn ein valides src gesetzt ist, Bild anzeigen */
+#result-gif[src]:not([src=""]) {
+    display: block !important;
+}
+
+.result-placeholder {
+    font-size: 48px;
+    margin: 20px auto;
     display: block;
+    text-align: center;
 }
 
 .danger-button {

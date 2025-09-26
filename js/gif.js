@@ -72,6 +72,7 @@ let currentGifUrl = null;
 
 function handleGameEndGif() {
     const resultGif = document.getElementById('result-gif');
+    const resultPlaceholder = document.getElementById('result-placeholder');
     
     // Reset any existing state
     if (currentGifUrl) {
@@ -80,13 +81,17 @@ function handleGameEndGif() {
     }
     
     if (window.timeLeft > 0) {
-        // Game ended early - show sad emoji
-        resultGif.style.fontSize = '48px';
-        resultGif.style.display = 'block';
-        resultGif.style.textAlign = 'center';
-        resultGif.src = '';
-        resultGif.alt = 'Schade';
-        resultGif.innerText = '😕';
+        // Game ended early - show placeholder instead of image to avoid broken image icon
+        if (resultGif) {
+            resultGif.removeAttribute('src');
+            resultGif.classList.add('hidden');
+            resultGif.style.display = 'none';
+            resultGif.removeAttribute('alt');
+        }
+        if (resultPlaceholder) {
+            resultPlaceholder.textContent = '😕 Schade';
+            resultPlaceholder.classList.remove('hidden');
+        }
         if (typeof window.hideSaveGifButton === 'function') {
             window.hideSaveGifButton();
         }
@@ -100,10 +105,16 @@ function handleGameEndGif() {
         }
         
         isLoadingGif = true;
-        resultGif.style.fontSize = '';
-        resultGif.style.display = '';
-        resultGif.style.textAlign = '';
-        resultGif.innerText = '';
+        // Ensure placeholder is hidden and image is visible for normal end
+        if (resultPlaceholder) {
+            resultPlaceholder.textContent = '';
+            resultPlaceholder.classList.add('hidden');
+        }
+        if (resultGif) {
+            resultGif.classList.remove('hidden');
+            resultGif.style.display = '';
+            resultGif.alt = 'Zufälliges Ende GIF';
+        }
         
         // Show loading placeholder
         resultGif.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -168,9 +179,18 @@ function resetGifState() {
     isLoadingGif = false;
     currentGifUrl = null;
     const resultGif = document.getElementById('result-gif');
+    const resultPlaceholder = document.getElementById('result-placeholder');
     if (resultGif) {
         resultGif.onload = null;
         resultGif.onerror = null;
+        resultGif.removeAttribute('src');
+        resultGif.classList.remove('hidden');
+        resultGif.style.display = '';
+        resultGif.alt = 'Zufälliges Ende GIF';
+    }
+    if (resultPlaceholder) {
+        resultPlaceholder.textContent = '';
+        resultPlaceholder.classList.add('hidden');
     }
 }
 

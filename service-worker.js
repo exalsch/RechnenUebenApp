@@ -1,5 +1,5 @@
-const STATIC_CACHE_NAME = 'rechnen-ueben-app-static-cache-v1';
-const DYNAMIC_CACHE_NAME = 'rechnen-ueben-app-dynamic-cache-v1';
+const STATIC_CACHE_NAME = 'rechnen-ueben-app-static-cache-v2';
+const DYNAMIC_CACHE_NAME = 'rechnen-ueben-app-dynamic-cache-v2';
 
 // Alle statischen Assets, die zum App-Grundgerüst gehören
 const urlsToCache = [
@@ -38,6 +38,8 @@ self.addEventListener('install', event => {
         return cache.addAll(urlsToCache);
       })
   );
+  // Activate updated SW immediately
+  self.skipWaiting();
 });
 
 // Alte Caches bei Aktivierung bereinigen
@@ -56,6 +58,8 @@ self.addEventListener('activate', event => {
       );
     })
   );
+  // Übernehme sofort die Kontrolle über die Clients
+  self.clients.claim();
 });
 
 // Anfragen abfangen: Zuerst aus dem Cache bedienen, dann vom Netzwerk holen und zwischenspeichern
