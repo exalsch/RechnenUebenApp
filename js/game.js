@@ -212,8 +212,16 @@ function generateQuestion(operation) {
                 window.correctAnswer = num1 * num2;
                 break;
             case 'division':
-                num2 = Math.floor(Math.random() * Math.sqrt(window.maxResult)) + 1;
-                window.correctAnswer = Math.floor(Math.random() * (window.maxResult / num2));
+                // Für Division: Max Ergebnis begrenzt den Quotienten (Antwort), nicht den Dividend
+                // Wähle Divisor analog zur Multiplikation (1..10 oder 2..10, falls "1 ausschließen")
+                if (window.excludeOneMultiplication) {
+                    num2 = Math.floor(Math.random() * 9) + 2; // 2..10
+                } else {
+                    num2 = Math.floor(Math.random() * 10) + 1; // 1..10
+                }
+                // Wähle Quotient im Bereich 1..maxResult (0 vermeiden)
+                window.correctAnswer = Math.floor(Math.random() * window.maxResult) + 1;
+                // Dividend ist Produkt aus Divisor und Quotient (kann > maxResult sein, das ist beabsichtigt)
                 num1 = window.correctAnswer * num2;
                 break;
         }
