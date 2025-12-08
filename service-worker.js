@@ -1,32 +1,35 @@
-const STATIC_CACHE_NAME = 'rechnen-ueben-app-static-cache-v2';
-const DYNAMIC_CACHE_NAME = 'rechnen-ueben-app-dynamic-cache-v2';
+const STATIC_CACHE_NAME = 'rechnen-ueben-app-static-cache-v3';
+const DYNAMIC_CACHE_NAME = 'rechnen-ueben-app-dynamic-cache-v3';
 
 // Alle statischen Assets, die zum App-Grundgerüst gehören
+// GitHub Pages base path
+const GHPATH = '/RechnenUebenApp';
+
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/main.js',
-  '/js/sound.js',
-  '/js/gallery.js',
-  '/js/drawing.js',
-  '/js/game.js',
-  '/js/settings.js',
-  '/js/scores.js',
-  '/js/gif.js',
-  '/js/timer.js',
-  '/js/numpad.js',
-  '/manifest.json',
-  '/sounds/correct.mp3',
-  '/sounds/wrong.mp3',
-  '/img/end_1.gif',
-  '/img/end_2.gif',
-  '/img/end_3.gif',
-  '/img/end_4.gif',
-  '/img/end_5.gif',
-  '/img/end_6.gif',
-  '/img/icon-192x192.png',
-  '/img/icon-512x512.png'
+  `${GHPATH}/`,
+  `${GHPATH}/index.html`,
+  `${GHPATH}/style.css`,
+  `${GHPATH}/main.js`,
+  `${GHPATH}/js/sound.js`,
+  `${GHPATH}/js/gallery.js`,
+  `${GHPATH}/js/drawing.js`,
+  `${GHPATH}/js/game.js`,
+  `${GHPATH}/js/settings.js`,
+  `${GHPATH}/js/scores.js`,
+  `${GHPATH}/js/gif.js`,
+  `${GHPATH}/js/timer.js`,
+  `${GHPATH}/js/numpad.js`,
+  `${GHPATH}/manifest.json`,
+  `${GHPATH}/sounds/correct.mp3`,
+  `${GHPATH}/sounds/wrong.mp3`,
+  `${GHPATH}/img/end_1.gif`,
+  `${GHPATH}/img/end_2.gif`,
+  `${GHPATH}/img/end_3.gif`,
+  `${GHPATH}/img/end_4.gif`,
+  `${GHPATH}/img/end_5.gif`,
+  `${GHPATH}/img/end_6.gif`,
+  `${GHPATH}/img/icon-192x192.png`,
+  `${GHPATH}/img/icon-512x512.png`
 ];
 
 // Service Worker installieren und statische Assets zwischenspeichern

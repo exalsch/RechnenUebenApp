@@ -291,7 +291,7 @@ function restartGame() {
 // Service Worker Registrierung
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js').then(registration => {
+    navigator.serviceWorker.register('/RechnenUebenApp/service-worker.js', {scope: '/RechnenUebenApp/'}).then(registration => {
       console.log('ServiceWorker registration successful with scope: ', registration.scope);
     }, err => {
       console.log('ServiceWorker registration failed: ', err);
