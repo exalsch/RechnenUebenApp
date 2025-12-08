@@ -80,6 +80,14 @@ function checkSecurityAnswer() {
         if (excludeOneEl) {
             excludeOneEl.checked = !!window.excludeOneMultiplication;
         }
+        const confettiCorrectEl = document.getElementById('confetti-correct-answer');
+        if (confettiCorrectEl) {
+            confettiCorrectEl.checked = window.confettiCorrectAnswer !== false;
+        }
+        const confettiEndEl = document.getElementById('confetti-end-round');
+        if (confettiEndEl) {
+            confettiEndEl.checked = window.confettiEndRound !== false;
+        }
     } else {
         alert('Falsche Antwort. Bitte versuche es erneut.');
         generateSecurityQuestion();
@@ -95,6 +103,8 @@ function saveSettings() {
     const gifCacheCount = parseInt(document.getElementById('gif-cache-count').value);
     const disableSkip = !!document.getElementById('disable-skip')?.checked;
     const excludeOneMultiplication = !!document.getElementById('exclude-one-multiplication')?.checked;
+    const confettiCorrectAnswer = document.getElementById('confetti-correct-answer')?.checked !== false;
+    const confettiEndRound = document.getElementById('confetti-end-round')?.checked !== false;
 
     if (!window.TENOR_API_KEY) {
         alert('Der API Key darf nicht leer sein.');
@@ -119,6 +129,8 @@ function saveSettings() {
     window.gifCacheCount = gifCacheCount;
     window.disableSkip = disableSkip;
     window.excludeOneMultiplication = excludeOneMultiplication;
+    window.confettiCorrectAnswer = confettiCorrectAnswer;
+    window.confettiEndRound = confettiEndRound;
     localStorage.setItem('playerName', playerName);
     localStorage.setItem('TENOR_API_KEY', window.TENOR_API_KEY);
     localStorage.setItem('gifQueries', window.gifQueries.join(';'));
@@ -126,6 +138,8 @@ function saveSettings() {
     localStorage.setItem('gifCacheCount', gifCacheCount.toString());
     localStorage.setItem('disableSkip', disableSkip ? '1' : '0');
     localStorage.setItem('excludeOneMultiplication', excludeOneMultiplication ? '1' : '0');
+    localStorage.setItem('confettiCorrectAnswer', confettiCorrectAnswer ? '1' : '0');
+    localStorage.setItem('confettiEndRound', confettiEndRound ? '1' : '0');
 
     // Reflect immediately in UI
     const skipBtn = document.getElementById('skip-question');

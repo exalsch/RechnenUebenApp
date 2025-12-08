@@ -28,7 +28,7 @@ function startTimer() {
         
         if (window.timeLeft <= 0) {
             clearInterval(window.timer);
-            window.endGame();
+            window.endGame(true); // true = successful end (timer ran out)
         }
     }, 1000);
 }

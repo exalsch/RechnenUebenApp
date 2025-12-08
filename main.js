@@ -124,6 +124,9 @@ window.gameTime = parseInt(localStorage.getItem('gameTime')) || 300; // Default 
 window.gifCacheCount = parseInt(localStorage.getItem('gifCacheCount')) || 20; // Default 20 GIFs
 window.disableSkip = (localStorage.getItem('disableSkip') === '1');
 window.excludeOneMultiplication = (localStorage.getItem('excludeOneMultiplication') === '1');
+// Confetti settings (default to enabled if not set)
+window.confettiCorrectAnswer = localStorage.getItem('confettiCorrectAnswer') !== '0';
+window.confettiEndRound = localStorage.getItem('confettiEndRound') !== '0';
 
 // Reflect skip setting immediately on load
 if (window.disableSkip) {
@@ -132,7 +135,7 @@ if (window.disableSkip) {
     skipButton.classList.remove('hidden');
 }
 
-function endGame() {
+function endGame(isSuccessfulEnd = false) {
     // Ensure any running timer is stopped
     clearInterval(window.timer);
     // Snapshot the score immediately to avoid any late resets/races
@@ -155,6 +158,21 @@ function endGame() {
     if (drawingCanvas) drawingCanvas.classList.remove('game-active');
     
     window.handleGameEndGif();
+    
+    // Fire confetti based on how the game ended (if enabled in settings)
+    if (window.confettiEndRound) {
+        if (isSuccessfulEnd) {
+            // Timer ran out - celebrate with happy emoji confetti
+            if (typeof window.fireEmojiConfetti === 'function') {
+                window.fireEmojiConfetti();
+            }
+        } else {
+            // Manual end (quit button) - sad emoji confetti
+            if (typeof window.fireSadConfetti === 'function') {
+                window.fireSadConfetti();
+            }
+        }
+    }
     
     window.saveScore(finalScore);
     window.displayScores();

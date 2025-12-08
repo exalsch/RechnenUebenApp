@@ -281,6 +281,10 @@ function checkAnswer() {
         window.score++;
         document.getElementById('score').innerText = `Punkte: ${window.score}`;
         document.getElementById('answer').classList.add('correct-answer');
+        // Fire random confetti cannon on correct answer (if enabled in settings)
+        if (window.confettiCorrectAnswer && typeof window.fireRandomConfetti === 'function') {
+            window.fireRandomConfetti();
+        }
         setTimeout(() => {
             document.getElementById('answer').classList.remove('correct-answer');
             document.getElementById('answer').value = '';
