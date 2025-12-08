@@ -35,7 +35,7 @@ function updateMaxResultOptions() {
 
 function checkApiKeyWarning() {
     const apiKeyWarning = document.getElementById('api-key-warning');
-    if (window.TENOR_API_KEY === 'LIVDSRZULEJO' || !window.TENOR_API_KEY) {
+    if (window.TENOR_API_KEY === 'DUMMY' || !window.TENOR_API_KEY) {
         apiKeyWarning.innerHTML = 'Hinweis: Für GIF-Belohnungen bitte einen eigenen Tenor API-Schlüssel in den ⚙️-Einstellungen eintragen.';
         apiKeyWarning.classList.remove('hidden');
     } else {
