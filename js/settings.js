@@ -16,7 +16,7 @@ function updateMaxResultOptions() {
 
     maxResultSelect.innerHTML = '';
 
-    const possibleValues = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+    const possibleValues = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 500, 1000];
     possibleValues.forEach(value => {
         if (value >= limits.min && value <= limits.max) {
             const option = document.createElement('option');

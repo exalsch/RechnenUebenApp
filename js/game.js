@@ -1,14 +1,16 @@
 // Operation-specific maxResult configurations
 const operationLimits = {
-    'addition': { min: 10, max: 100 },
-    'addition-carry': { min: 20, max: 100 },
-    'addition-tens': { min: 20, max: 100 },
-    'addition-simple-carry': { min: 20, max: 100 },
-    'mixed-simple': { min: 20, max: 100 },
-    'mixed-carry': { min: 20, max: 100 },
-    'subtraktion': { min: 10, max: 100 },
-    'subtraktion-simple-carry': { min: 20, max: 100 },
-    'subtraktion-carry': { min: 20, max: 100 },
+    'addition': { min: 10, max: 1000 },
+    'addition-carry': { min: 20, max: 1000 },
+    'addition-tens': { min: 20, max: 1000 },
+    'addition-simple-carry': { min: 20, max: 1000 },
+    'addition-hundreds': { min: 200, max: 1000 },
+    'mixed-simple': { min: 20, max: 1000 },
+    'mixed-carry': { min: 20, max: 1000 },
+    'subtraktion': { min: 10, max: 1000 },
+    'subtraktion-simple-carry': { min: 20, max: 1000 },
+    'subtraktion-carry': { min: 20, max: 1000 },
+    'subtraktion-hundreds': { min: 200, max: 1000 },
     'multiplikation': { min: 20, max: 100 },
     'multi-divi': { min: 20, max: 100 },
     'division': { min: 10, max: 100 }
@@ -20,11 +22,13 @@ function getOperationName(operation) {
         'addition-carry': 'Addition (mit Übertrag)',
         'addition-tens': 'Addition (Zehner+Zahl)',
         'addition-simple-carry': 'Addition (Übertrag einfach)',
+        'addition-hundreds': 'Addition (Hunderter-Anfänger)',
         'mixed-simple': 'Addition & Subtraktion (Übertrag einfach)',
         'mixed-carry': 'Addition & Subtraktion (mit Übertrag)',
         'subtraktion': 'Subtraktion (ohne Übertrag)',
         'subtraktion-simple-carry': 'Subtraktion (Übertrag einfach)',
         'subtraktion-carry': 'Subtraktion (mit Übertrag)',
+        'subtraktion-hundreds': 'Subtraktion (Hunderter-Anfänger)',
         'multiplikation': 'Multiplikation',
         'multi-divi': 'Multiplikation & Division (Umkehraufgabe)',
         'division': 'Division'
@@ -179,6 +183,16 @@ function generateQuestion(operation) {
                 if ((num1 % 10 + num2 % 10) < 10) continue;
                 window.correctAnswer = num1 + num2;
                 break;
+            case 'addition-hundreds':
+                // Hunderter-Anfänger: eine Zahl 100-maxResult, andere 1-99
+                num1 = Math.floor(Math.random() * (window.maxResult - 100)) + 100; // 100 bis maxResult-1
+                num2 = Math.floor(Math.random() * 99) + 1; // 1 bis 99
+                // Stelle sicher, dass Ergebnis <= maxResult
+                if (num1 + num2 > window.maxResult) {
+                    num2 = window.maxResult - num1;
+                }
+                window.correctAnswer = num1 + num2;
+                break;
             case 'subtraktion':
                 num1 = Math.floor(Math.random() * window.maxResult);
                 num2 = Math.floor(Math.random() * num1);
@@ -198,6 +212,12 @@ function generateQuestion(operation) {
                 num1 = Math.floor(Math.random() * window.maxResult);
                 num2 = Math.floor(Math.random() * num1);
                 if (!hasCarry(num1, num2)) continue;
+                window.correctAnswer = num1 - num2;
+                break;
+            case 'subtraktion-hundreds':
+                // Hunderter-Anfänger: Minuend 100-maxResult, Subtrahend 1-99
+                num1 = Math.floor(Math.random() * (window.maxResult - 100)) + 100; // 100 bis maxResult-1
+                num2 = Math.floor(Math.random() * 99) + 1; // 1 bis 99
                 window.correctAnswer = num1 - num2;
                 break;
             case 'multiplikation':
@@ -240,9 +260,11 @@ function generateQuestion(operation) {
         'addition-tens': '+',
         'addition-simple-carry': '+',
         'addition-carry': '+',
+        'addition-hundreds': '+',
         'subtraktion': '-',
         'subtraktion-simple-carry': '-',
         'subtraktion-carry': '-',
+        'subtraktion-hundreds': '-',
         'multiplikation': '⋅',
         'division': ':',
         'multi-divi': '⋅'
