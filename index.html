@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Mathe Trainer App für Kinder. Übe Addition, Subtraktion, Multiplikation und Division mit Timer und Zeichnen. Offline nutzbar. Keine Datenübertragung.">
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/RechnenUebenApp/manifest.json">
     <title>Mathe trainer app</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <!--
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3804876445528695"
      crossorigin="anonymous"></script>
@@ -237,6 +238,17 @@
                     In Multiplikation: Aufgaben mit 1 weglassen (z. B. 1⋅x oder x⋅1)
                 </label>
                 <hr>
+                <h3>Konfetti-Effekte 🎉</h3>
+                <label>
+                    <input type="checkbox" id="confetti-correct-answer" checked>
+                    Konfetti bei richtiger Antwort
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" id="confetti-end-round" checked>
+                    Konfetti am Ende der Runde
+                </label>
+                <hr>
                 <h3>Galerie</h3>
                 <button id="import-gallery">Galerie importieren</button>
                 <input type="file" id="import-gallery-input" class="hidden" accept=".json">
@@ -300,7 +312,8 @@
             </div>
         </div>
     </div>
-            <script src="js/sound.js"></script>
+            <script src="js/confetti.js"></script>
+    <script src="js/sound.js"></script>
         <script src="js/gallery.js"></script>
     <script src="js/drawing.js"></script>
     <script src="js/game.js"></script>

@@ -1,5 +1,7 @@
 # Mathe trainer app
 
+🔗 **Live Demo:** [https://exalsch.github.io/RechnenUebenApp/](https://exalsch.github.io/RechnenUebenApp/)
+
 Dies ist eine einfache Web-App, um Grundrechenarten zu üben. Als Belohnung für richtige Antworten werden zufällige, lustige GIFs von Tenor angezeigt. Die App ist als Progressive Web App (PWA) konzipiert, was bedeutet, dass sie auf einem Gerät (z.B. einem Smartphone) installiert und auch offline genutzt werden kann.
 
 ## Features
@@ -41,4 +43,4 @@ Um die App lokal zu entwickeln und zu testen, sind einige Schritte notwendig.
    - **Auf dem Smartphone**: Suche im `ngrok`-Fenster nach der `https://`-Adresse (z.B. `https://dein-code.ngrok.io`). Gib diese Adresse im Browser deines Smartphones ein. Da dies eine sichere Verbindung ist, kannst du die App nun als PWA installieren und die Offline-Funktionen testen.
 
 ---
-*Entwickelt mit Unterstützung von Cascade.*
+*Entwickelt mit Unterstützung von AI.*
