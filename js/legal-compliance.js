@@ -14,10 +14,11 @@ function checkAgeVerification() {
     const ageVerificationModal = document.getElementById('age-verification-modal');
     
     if (!ageVerified && ageVerificationModal) {
-        ageVerificationModal.style.display = 'flex';
+        ageVerificationModal.classList.remove('hidden');
     } else if (ageVerificationModal) {
-        ageVerificationModal.style.display = 'none';
+        ageVerificationModal.classList.add('hidden');
     }
+    if (typeof window.updateBodyScrollLock === 'function') window.updateBodyScrollLock();
 }
 
 function handleAgeVerification(isUnder16) {
@@ -53,7 +54,8 @@ function handleAgeVerification(isUnder16) {
     }
     
     // Hide age verification modal
-    ageVerificationModal.style.display = 'none';
+    ageVerificationModal.classList.add('hidden');
+    if (typeof window.updateBodyScrollLock === 'function') window.updateBodyScrollLock();
     
     // Show ads if consent is given
     if (localStorage.getItem('dataConsent') === 'true') {

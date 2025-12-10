@@ -114,6 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
             skipButton.classList.remove('hidden');
         }
     }
+    // Setup modal guardrails
+    setupModalGuardrails();
 });
 
 // Load settings from localStorage or use defaults
@@ -265,6 +267,139 @@ function restartGame() {
 
 
 
+
+// ===== Modal Guardrails =====
+function updateBodyScrollLock() {
+    try {
+        const anyModalOpen = Array.from(document.querySelectorAll('.modal')).some(m => !m.classList.contains('hidden'));
+        const ageModal = document.getElementById('age-verification-modal');
+        const ageOpen = ageModal ? getComputedStyle(ageModal).display !== 'none' : false;
+        if (anyModalOpen || ageOpen) {
+            document.body.classList.add('no-scroll');
+        } else {
+            document.body.classList.remove('no-scroll');
+        }
+    } catch (_) {}
+}
+
+// Expose for other scripts (e.g., legal-compliance)
+window.updateBodyScrollLock = updateBodyScrollLock;
+
+function getVisibleModals() {
+    return Array.from(document.querySelectorAll('.modal')).filter(m => !m.classList.contains('hidden'));
+}
+
+function closeModal(modalEl) {
+    if (!modalEl) return;
+    modalEl.classList.add('hidden');
+    updateBodyScrollLock();
+}
+
+function closeAllModalsExcept(keepEl) {
+    getVisibleModals().forEach(m => { if (m !== keepEl) m.classList.add('hidden'); });
+    updateBodyScrollLock();
+}
+
+function setupOverlayClose() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        if (modal.__overlayBound) return; // guard against double-binding
+        modal.__overlayBound = true;
+        modal.addEventListener('click', (e) => {
+            const content = modal.querySelector('.modal-content');
+            if (e.target === modal && content && !content.contains(e.target)) {
+                // Clicked on overlay – close this modal
+                closeModal(modal);
+            }
+        });
+    });
+}
+
+function setupEscClose() {
+    if (document.__escBound) return;
+    document.__escBound = true;
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const visible = getVisibleModals();
+        if (visible.length > 0) {
+            // Close the last opened (assume last in DOM order among visible)
+            closeModal(visible[visible.length - 1]);
+        }
+        // Age verification modal intentionally not closed via ESC
+    });
+}
+
+function wrapOpenFunction(name, getModalEl) {
+    const original = window[name];
+    if (typeof original !== 'function') return;
+    if (original.__wrapped) return;
+    const wrapped = function(...args) {
+        const modalEl = getModalEl();
+        if (modalEl) closeAllModalsExcept(modalEl);
+        const result = original.apply(this, args);
+        updateBodyScrollLock();
+        setupOverlayClose();
+        return result;
+    };
+    wrapped.__wrapped = true;
+    window[name] = wrapped;
+}
+
+function wrapCloseFunction(name) {
+    const original = window[name];
+    if (typeof original !== 'function') return;
+    if (original.__wrapped) return;
+    const wrapped = function(...args) {
+        const result = original.apply(this, args);
+        updateBodyScrollLock();
+        return result;
+    };
+    wrapped.__wrapped = true;
+    window[name] = wrapped;
+}
+
+function setupModalGuardrails() {
+    // Wrap known modal openers
+    wrapOpenFunction('openSettingsModal', () => document.getElementById('settings-modal'));
+    wrapOpenFunction('showGallery', () => document.getElementById('gallery-modal'));
+    wrapOpenFunction('showTenorHelp', () => document.getElementById('tenor-help-modal'));
+    wrapCloseFunction('closeSettingsModal');
+    wrapCloseFunction('closeTenorHelp');
+
+    // Ensure close buttons also update scroll lock
+    document.querySelectorAll('.close-button').forEach(btn => {
+        if (btn.__closeBound) return;
+        btn.__closeBound = true;
+        btn.addEventListener('click', () => {
+            setTimeout(updateBodyScrollLock, 0);
+        });
+    });
+
+    setupOverlayClose();
+    setupEscClose();
+
+    // Observe modal visibility changes (e.g., gallery modal opened from its own module)
+    if (!document.__modalObserver) {
+        const observer = new MutationObserver((mutations) => {
+            for (const m of mutations) {
+                if (m.type === 'attributes' && m.attributeName === 'class') {
+                    const el = m.target;
+                    if (el.classList && el.classList.contains('modal')) {
+                        const isVisible = !el.classList.contains('hidden');
+                        if (isVisible) {
+                            closeAllModalsExcept(el);
+                        }
+                        updateBodyScrollLock();
+                    }
+                }
+            }
+        });
+        observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
+        document.__modalObserver = observer;
+    }
+
+    // Initial lock check (in case something opened earlier)
+    updateBodyScrollLock();
+}
 
 // Service Worker Registrierung
 // ===== GIF Caching for Offline Use =====
