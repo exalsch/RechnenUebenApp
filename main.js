@@ -149,9 +149,11 @@ function endGame(isSuccessfulEnd = false) {
     document.body.classList.remove('game-active');
     
     // Generate encouraging message with player name
-    const playerName = window.playerName || 'Spieler';
-    const encouragingMessage = getEncouragingMessage(playerName, finalScore);
-    finalScoreDiv.innerHTML = `<strong>${encouragingMessage}</strong><br>Dein Punktestand: ${finalScore}`;
+    const defaultPlayerName = window.i18n ? window.i18n.t('defaultPlayerName') : 'Spieler';
+    const playerName = window.playerName || defaultPlayerName;
+    const encouragingMessage = window.i18n ? window.i18n.getEncouragingMessage(playerName, finalScore) : getEncouragingMessage(playerName, finalScore);
+    const yourScoreLabel = window.i18n ? window.i18n.t('yourScore') : 'Dein Punktestand';
+    finalScoreDiv.innerHTML = `<strong>${encouragingMessage}</strong><br>${yourScoreLabel}: ${finalScore}`;
     
     // Deactivate drawing controls
     const drawingControls = document.getElementById('drawing-controls');
@@ -271,7 +273,8 @@ function restartGame() {
     
     // Reset input and score display
     answerInput.value = '';
-    scoreDiv.innerText = 'Punkte: 0';
+    const pointsLabel = window.i18n ? window.i18n.t('points') : 'Punkte';
+    scoreDiv.innerText = `${pointsLabel}: 0`;
     const defaultTime = window.gameTime || 300;
     const minutes = Math.floor(defaultTime / 60);
     const seconds = defaultTime % 60;

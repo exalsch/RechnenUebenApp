@@ -17,18 +17,18 @@
     <!-- Age Verification Modal -->
     <div id="age-verification-modal" class="age-verification-modal hidden">
         <div class="age-verification-content">
-            <h2>📚 Altersverifikation</h2>
-            <p>Diese App wurde für Kinder entwickelt und folgt den deutschen Datenschutzbestimmungen.</p>
-            <p><strong>Bist du unter 16 Jahre alt?</strong></p>
+            <h2 data-i18n="ageVerificationTitle">📚 Altersverifikation</h2>
+            <p data-i18n="ageVerificationText">Diese App wurde für Kinder entwickelt und folgt den deutschen Datenschutzbestimmungen.</p>
+            <p><strong data-i18n="ageVerificationQuestion">Bist du unter 16 Jahre alt?</strong></p>
             <div class="age-buttons">
-                <button class="age-button under-16" onclick="handleAgeVerification(true)">
+                <button class="age-button under-16" onclick="handleAgeVerification(true)" data-i18n="ageUnder16">
                     Ja, ich bin unter 16
                 </button>
-                <button class="age-button over-16" onclick="handleAgeVerification(false)">
+                <button class="age-button over-16" onclick="handleAgeVerification(false)" data-i18n="ageOver16">
                     Nein, ich bin 16 oder älter
                 </button>
             </div>
-            <p style="font-size: 12px; color: #666; margin-top: 15px;">
+            <p style="font-size: 12px; color: #666; margin-top: 15px;" data-i18n="ageVerificationNote">
                 Kinder unter 16 Jahren benötigen die Erlaubnis ihrer Eltern zur Nutzung.
             </p>
         </div>
@@ -37,10 +37,10 @@
     <!-- Data Storage Info Banner -->
     <div id="consent-banner" class="consent-banner hidden">
         <p>
-            Diese App speichert Spielstände nur lokal auf deinem Gerät. Keine Cookies, keine Server-Übertragung.
-            <a href="privacy.html" target="_blank">Datenschutzerklärung</a>
+            <span data-i18n="consentText">Diese App speichert Spielstände nur lokal auf deinem Gerät. Keine Cookies, keine Server-Übertragung.</span>
+            <a href="privacy.html" target="_blank" data-i18n="privacyPolicy">Datenschutzerklärung</a>
         </p>
-        <button onclick="acceptConsent()">Verstanden</button>
+        <button onclick="acceptConsent()" data-i18n="understood">Verstanden</button>
     </div>
 
     <div class="container">
@@ -70,29 +70,40 @@
             </div>
             -->
             <div class="header">
-                <h1>Mathe trainer</h1>
+                <h1 data-i18n="appTitle">Mathe trainer</h1>
                 <div id="api-key-warning" class="warning hidden"></div>
-                <button id="settings-button" class="settings-button" title="Einstellungen">⚙️</button>
+                <div class="header-buttons">
+                    <div id="language-selector" class="language-selector">
+                        <span id="current-lang-display">DE</span>
+                        <span class="lang-arrow">▼</span>
+                        <div id="language-dropdown" class="language-dropdown hidden">
+                            <button data-lang="de" class="lang-option">🇩🇪 Deutsch</button>
+                            <button data-lang="cs" class="lang-option">🇨🇿 Čeština</button>
+                            <button data-lang="en" class="lang-option">🇬🇧 English</button>
+                        </div>
+                    </div>
+                    <button id="settings-button" class="settings-button" data-i18n-title="settingsButtonTitle" title="Einstellungen">⚙️</button>
+                </div>
             </div>
             <div id="settings">
-                <label for="operation">Wähle die Art der Aufgaben:</label>
+                <label for="operation" data-i18n="selectOperationType">Wähle die Art der Aufgaben:</label>
                 <select id="operation">
-                    <option value="addition">Addition (ohne Übertrag)</option>
-                    <option value="addition-carry">Addition (mit Übertrag)</option>
-                    <option value="addition-tens">Addition (Zehner+Zahl)</option>
-                    <option value="addition-simple-carry">Addition (Übertrag einfach)</option>
-                    <option value="addition-hundreds">Addition (Hunderter-Anfänger)</option>
-                    <option value="mixed-simple">+ & - (Übertrag einfach)</option>
-                    <option value="mixed-carry">+ & - (mit Übertrag)</option>
-                    <option value="subtraktion">Subtraktion (ohne Übertrag)</option>
-                    <option value="subtraktion-simple-carry">Subtraktion (Übertrag einfach)</option>
-                    <option value="subtraktion-carry">Subtraktion (mit Übertrag)</option>
-                    <option value="subtraktion-hundreds">Subtraktion (Hunderter-Anfänger)</option>
-                    <option value="multiplikation">Multiplikation</option>
-                    <option value="multi-divi">Multi & Divi (Multiplikation, dann Umkehrdivision)</option>
-                    <option value="division">Division</option>
+                    <option value="addition" data-i18n="operations.addition">Addition (ohne Übertrag)</option>
+                    <option value="addition-carry" data-i18n="operations.addition-carry">Addition (mit Übertrag)</option>
+                    <option value="addition-tens" data-i18n="operations.addition-tens">Addition (Zehner+Zahl)</option>
+                    <option value="addition-simple-carry" data-i18n="operations.addition-simple-carry">Addition (Übertrag einfach)</option>
+                    <option value="addition-hundreds" data-i18n="operations.addition-hundreds">Addition (Hunderter-Anfänger)</option>
+                    <option value="mixed-simple" data-i18n="operations.mixed-simple">+ & - (Übertrag einfach)</option>
+                    <option value="mixed-carry" data-i18n="operations.mixed-carry">+ & - (mit Übertrag)</option>
+                    <option value="subtraktion" data-i18n="operations.subtraktion">Subtraktion (ohne Übertrag)</option>
+                    <option value="subtraktion-simple-carry" data-i18n="operations.subtraktion-simple-carry">Subtraktion (Übertrag einfach)</option>
+                    <option value="subtraktion-carry" data-i18n="operations.subtraktion-carry">Subtraktion (mit Übertrag)</option>
+                    <option value="subtraktion-hundreds" data-i18n="operations.subtraktion-hundreds">Subtraktion (Hunderter-Anfänger)</option>
+                    <option value="multiplikation" data-i18n="operations.multiplikation">Multiplikation</option>
+                    <option value="multi-divi" data-i18n="operations.multi-divi">Multi & Divi (Multiplikation, dann Umkehrdivision)</option>
+                    <option value="division" data-i18n="operations.division">Division</option>
                 </select>
-                <label for="maxResult">Max Ergebnis:</label>
+                <label for="maxResult" data-i18n="maxResult">Max Ergebnis:</label>
                 <select id="maxResult">
                     <option value="10">bis 10</option>
                     <option value="20">bis 20</option>
@@ -100,19 +111,19 @@
                     <option value="100">bis 100</option>
                     <option value="200">bis 200</option>
                 </select>
-                <button id="start-button">Start</button>
-                <button id="clear-highscore" class="danger-button">Highscore Liste löschen</button>
-                <button id="gallery-button" class="gallery-button">Galerie</button>
+                <button id="start-button" data-i18n="start">Start</button>
+                <button id="clear-highscore" class="danger-button" data-i18n="clearHighscores">Highscore Liste löschen</button>
+                <button id="gallery-button" class="gallery-button" data-i18n="gallery">Galerie</button>
             </div>
             <div id="game" class="hidden">
                 <div id="question"></div>
                 <div class="answer-section">
                     <div class="answer-input-group">
-                        <input type="text" id="answer" placeholder="Deine Antwort" autocomplete="off">
-                        <button id="numpad-toggle" class="numpad-toggle-btn" title="Zahlenfeld ein/aus">⌨️</button>
+                        <input type="text" id="answer" data-i18n-placeholder="yourAnswer" placeholder="Deine Antwort" autocomplete="off">
+                        <button id="numpad-toggle" class="numpad-toggle-btn" data-i18n-title="numpadToggleTitle" title="Zahlenfeld ein/aus">⌨️</button>
                         <div class="action-buttons">
-                            <button id="skip-question" title="Überspringen (-1 Punkt)">⏭️</button>
-                            <button id="end-game" title="Beenden">🔚</button>
+                            <button id="skip-question" data-i18n-title="skipTitle" title="Überspringen (-1 Punkt)">⏭️</button>
+                            <button id="end-game" data-i18n-title="endGameTitle" title="Beenden">🔚</button>
                         </div>
                     </div>
                     <div id="custom-numpad" class="numpad hidden">
@@ -139,7 +150,7 @@
                     </div>
                 </div>
                 
-                <div id="score">Punkte: 0</div>
+                <div id="score"><span data-i18n="points">Punkte</span>: 0</div>
                 <div id="timer-container">
                     <div id="timer">⏲: 5:00</div>
                     <div id="progress-bar">
@@ -148,12 +159,12 @@
                 </div>
             </div>
             <div id="result" class="hidden">
-                <h2>Ergebnis</h2>
-                <img id="result-gif" alt="Zufälliges Ende GIF">
+                <h2 data-i18n="result">Ergebnis</h2>
+                <img id="result-gif" data-i18n-alt="resultGifAlt" alt="Zufälliges Ende GIF">
                 <div id="result-placeholder" class="result-placeholder hidden"></div>
                 <button id="save-gif" class="heart-button">❤️</button>
                 <div id="final-score"></div>
-                <button id="restart-button">Neu starten</button>
+                <button id="restart-button" data-i18n="restart">Neu starten</button>
             </div>
             <div id="score-list"></div>
         </div>
@@ -162,56 +173,56 @@
     <!-- Legal Footer -->
     <footer class="legal-footer">
         <div class="footer-links">
-            <a href="about.html">Über diese App</a>
-            <a href="privacy.html">Datenschutz</a>
-            <a href="impressum.html">Impressum</a>
+            <a href="about.html" data-i18n="aboutApp">Über diese App</a>
+            <a href="privacy.html" data-i18n="privacyPolicy">Datenschutz</a>
+            <a href="impressum.html" data-i18n="impressum">Impressum</a>
         </div>
         <div class="footer-info">
-            <p>© 2025 Mathe trainer app - Entwickelt mit ❤️ für Kinder</p>
+            <p data-i18n="footerCopyright">© 2025 Mathe trainer app - Entwickelt mit ❤️ für Kinder</p>
         </div>
     </footer>
     <div class="drawing-section">
         <div id="drawing-controls">
-            <button id="minimize-button" title="Minimieren">_</button>
-            <button id="clear-drawing" title="Notiz löschen">🗑️</button>
+            <button id="minimize-button" data-i18n-title="minimizeTitle" title="Minimieren">_</button>
+            <button id="clear-drawing" data-i18n-title="clearDrawingTitle" title="Notiz löschen">🗑️</button>
             <button id="sound-toggle" class="sound-button">🔔</button>
             <div class="drawing-tools">
-                <input type="color" id="color-picker" value="#000000" title="Farbe wählen">
-                <input type="range" id="line-width" min="1" max="10" value="2" title="Strichstärke anpassen">
+                <input type="color" id="color-picker" value="#000000" data-i18n-title="colorPickerTitle" title="Farbe wählen">
+                <input type="range" id="line-width" min="1" max="10" value="2" data-i18n-title="lineWidthTitle" title="Strichstärke anpassen">
             </div>
         </div>
     </div>
     <div id="settings-modal" class="modal hidden">
         <div class="modal-content">
             <span id="close-settings-modal" class="close-button">&times;</span>
-            <h2>Einstellungen</h2>
+            <h2 data-i18n="settings">Einstellungen</h2>
             <div id="security-check">
-                <p>Bitte löse die folgende Aufgabe, um die Einstellungen zu öffnen:</p>
+                <p data-i18n="securityCheckText">Bitte löse die folgende Aufgabe, um die Einstellungen zu öffnen:</p>
                 <p id="security-question"></p>
-                <input type="number" id="security-answer" placeholder="Antwort">
-                <button id="security-submit">Bestätigen</button>
+                <input type="number" id="security-answer" data-i18n-placeholder="securityAnswerPlaceholder" placeholder="Antwort">
+                <button id="security-submit" data-i18n="confirm">Bestätigen</button>
             </div>
             <div id="settings-content" class="hidden">
-                <label for="player-name">Spielername:</label>
-                <input type="text" id="player-name" placeholder="Dein Name" maxlength="20">
+                <label for="player-name" data-i18n="playerName">Spielername:</label>
+                <input type="text" id="player-name" data-i18n-placeholder="playerNamePlaceholder" placeholder="Dein Name" maxlength="20">
                 <hr>
                 <div class="api-key-section">
                     <label for="tenor-api-key">
-                        Tenor API Key:
+                        <span data-i18n="tenorApiKey">Tenor API Key:</span>
                         <button type="button" class="help-icon" onclick="showTenorHelp()" title="Hilfe zum Tenor API Key">❓</button>
                     </label>
-                    <input type="text" id="tenor-api-key" placeholder="Dein TENOR API Key">
+                    <input type="text" id="tenor-api-key" data-i18n-placeholder="tenorApiKeyPlaceholder" placeholder="Dein TENOR API Key">
                     <div class="api-links">
-                        <a href="https://console.cloud.google.com/apis/library/tenor.googleapis.com" target="_blank" class="api-link">
+                        <a href="https://console.cloud.google.com/apis/library/tenor.googleapis.com" target="_blank" class="api-link" data-i18n="activateTenorApi">
                             🔗 Tenor API aktivieren
                         </a>
                     </div>
                 </div>
-                <label for="gif-queries">GIF Suchbegriffe (getrennt durch ;):</label>
-                <input type="text" id="gif-queries" placeholder="z.B. welpe;lustige tiere">
+                <label for="gif-queries" data-i18n="gifSearchTerms">GIF Suchbegriffe (getrennt durch ;):</label>
+                <input type="text" id="gif-queries" data-i18n-placeholder="gifSearchTermsPlaceholder" placeholder="z.B. welpe;lustige tiere">
                 <hr>
-                <h3>Spielzeit</h3>
-                <label for="game-time">Rundendauer (Sekunden):</label>
+                <h3 data-i18n="gameTimeSection">Spielzeit</h3>
+                <label for="game-time" data-i18n="roundDuration">Rundendauer (Sekunden):</label>
                 <select id="game-time">
                     <option value="60">1 Minute (60s)</option>
                     <option value="300" selected>5 Minuten (300s)</option>
@@ -219,8 +230,8 @@
                     <option value="900">15 Minuten (900s)</option>
                 </select>
                 <hr>
-                <h3>GIF Cache</h3>
-                <label for="gif-cache-count">Anzahl vorzuladender GIFs:</label>
+                <h3 data-i18n="gifCacheSection">GIF Cache</h3>
+                <label for="gif-cache-count" data-i18n="preloadGifsCount">Anzahl vorzuladender GIFs:</label>
                 <select id="gif-cache-count">
                     <option value="10">10 GIFs</option>
                     <option value="20" selected>20 GIFs</option>
@@ -228,47 +239,47 @@
                     <option value="50">50 GIFs</option>
                 </select>
                 <hr>
-                <h3>Steuerung</h3>
+                <h3 data-i18n="controlsSection">Steuerung</h3>
                 <label>
                     <input type="checkbox" id="disable-skip">
-                    Skip-Button deaktivieren
+                    <span data-i18n="disableSkipButton">Skip-Button deaktivieren</span>
                 </label>
                 <hr>
-                <h3>Aufgabenoptionen</h3>
+                <h3 data-i18n="taskOptionsSection">Aufgabenoptionen</h3>
                 <label>
                     <input type="checkbox" id="exclude-one-multiplication">
-                    In Multiplikation: Aufgaben mit 1 weglassen (z. B. 1⋅x oder x⋅1)
+                    <span data-i18n="excludeOneMultiplication">In Multiplikation: Aufgaben mit 1 weglassen (z. B. 1⋅x oder x⋅1)</span>
                 </label>
                 <hr>
-                <h3>Konfetti-Effekte 🎉</h3>
+                <h3 data-i18n="confettiSection">Konfetti-Effekte 🎉</h3>
                 <label>
                     <input type="checkbox" id="confetti-correct-answer" checked>
-                    Konfetti bei richtiger Antwort
+                    <span data-i18n="confettiCorrectAnswer">Konfetti bei richtiger Antwort</span>
                 </label>
                 <br>
                 <label>
                     <input type="checkbox" id="confetti-end-round" checked>
-                    Konfetti am Ende der Runde
+                    <span data-i18n="confettiEndRound">Konfetti am Ende der Runde</span>
                 </label>
                 <hr>
-                <h3>Galerie</h3>
-                <button id="import-gallery">Galerie importieren</button>
+                <h3 data-i18n="gallerySection">Galerie</h3>
+                <button id="import-gallery" data-i18n="importGallery">Galerie importieren</button>
                 <input type="file" id="import-gallery-input" class="hidden" accept=".json">
-                <button id="export-gallery">Galerie exportieren</button>
+                <button id="export-gallery" data-i18n="exportGallery">Galerie exportieren</button>
                 <hr>
-                <button id="save-settings">Einstellungen speichern</button>
+                <button id="save-settings" data-i18n="saveSettings">Einstellungen speichern</button>
             </div>
         </div>
     </div>
     <div id="gallery-modal" class="modal hidden">
         <div class="modal-content">
             <span id="close-gallery-modal" class="close-button">&times;</span>
-            <h2>Galerie</h2>
+            <h2 data-i18n="gallery">Galerie</h2>
             <div id="gallery-content" class="gallery-grid"></div>
             <div id="pagination-controls">
-                <button id="prev-page">&lt; Zurück</button>
+                <button id="prev-page" data-i18n="prevPage">&lt; Zurück</button>
                 <span id="page-info"></span>
-                <button id="next-page">Weiter &gt;</button>
+                <button id="next-page" data-i18n="nextPage">Weiter &gt;</button>
             </div>
         </div>
     </div>
@@ -277,46 +288,48 @@
     <div id="tenor-help-modal" class="modal hidden">
         <div class="modal-content">
             <span class="close-button" onclick="closeTenorHelp()">&times;</span>
-            <h2>🎬 Tenor API Key einrichten</h2>
+            <h2 data-i18n="tenorHelpTitle">🎬 Tenor API Key einrichten</h2>
             <div class="help-content">
-                <h3>Schritt 1: Google Cloud Console</h3>
-                <p>1. Gehe zur <a href="https://console.cloud.google.com/apis/library/tenor.googleapis.com" target="_blank">Google Cloud Console</a></p>
-                <p>2. Melde dich mit deinem Google-Konto an</p>
-                <p>3. Erstelle ein neues Projekt oder wähle ein bestehendes aus</p>
-                
-                <h3>Schritt 2: Tenor API aktivieren</h3>
-                <p>1. Klicke auf "Aktivieren" für die Tenor API</p>
-                <p>2. Warte, bis die Aktivierung abgeschlossen ist</p>
-                
-                <h3>Schritt 3: API-Schlüssel erstellen</h3>
-                <p>1. Gehe zu "APIs & Services" → "Anmeldedaten"</p>
-                <p>2. Klicke auf "+ Anmeldedaten erstellen"</p>
-                <p>3. Wähle "API-Schlüssel" aus</p>
-                <p>4. Kopiere den generierten Schlüssel</p>
-                
-                <h3>Schritt 4: API-Schlüssel einschränken (empfohlen)</h3>
-                <p>1. Klicke auf "Schlüssel einschränken"</p>
-                <p>2. Wähle "HTTP-Verweis (Websites)" aus</p>
-                <p>3. Füge deine Domain hinzu (z.B. example.com/*)</p>
-                <p>4. Unter "API-Einschränkungen" wähle "Tenor API" aus</p>
-                
-                <h3>Schritt 5: Schlüssel einsetzen</h3>
-                <p>1. Kopiere den API-Schlüssel in das Feld oben</p>
-                <p>2. Klicke auf "Einstellungen speichern"</p>
-                
+                <h3 data-i18n="tenorStep1Title">Schritt 1: Google Cloud Console</h3>
+                <p><span data-i18n="tenorStep1Text1">1. Gehe zur</span> <a href="https://console.cloud.google.com/apis/library/tenor.googleapis.com" target="_blank">Google Cloud Console</a></p>
+                <p data-i18n="tenorStep1Text2">2. Melde dich mit deinem Google-Konto an</p>
+                <p data-i18n="tenorStep1Text3">3. Erstelle ein neues Projekt oder wähle ein bestehendes aus</p>
+
+                <h3 data-i18n="tenorStep2Title">Schritt 2: Tenor API aktivieren</h3>
+                <p data-i18n="tenorStep2Text1">1. Klicke auf "Aktivieren" für die Tenor API</p>
+                <p data-i18n="tenorStep2Text2">2. Warte, bis die Aktivierung abgeschlossen ist</p>
+
+                <h3 data-i18n="tenorStep3Title">Schritt 3: API-Schlüssel erstellen</h3>
+                <p data-i18n="tenorStep3Text1">1. Gehe zu "APIs & Services" → "Anmeldedaten"</p>
+                <p data-i18n="tenorStep3Text2">2. Klicke auf "+ Anmeldedaten erstellen"</p>
+                <p data-i18n="tenorStep3Text3">3. Wähle "API-Schlüssel" aus</p>
+                <p data-i18n="tenorStep3Text4">4. Kopiere den generierten Schlüssel</p>
+
+                <h3 data-i18n="tenorStep4Title">Schritt 4: API-Schlüssel einschränken (empfohlen)</h3>
+                <p data-i18n="tenorStep4Text1">1. Klicke auf "Schlüssel einschränken"</p>
+                <p data-i18n="tenorStep4Text2">2. Wähle "HTTP-Verweis (Websites)" aus</p>
+                <p data-i18n="tenorStep4Text3">3. Füge deine Domain hinzu (z.B. example.com/*)</p>
+                <p data-i18n="tenorStep4Text4">4. Unter "API-Einschränkungen" wähle "Tenor API" aus</p>
+
+                <h3 data-i18n="tenorStep5Title">Schritt 5: Schlüssel einsetzen</h3>
+                <p data-i18n="tenorStep5Text1">1. Kopiere den API-Schlüssel in das Feld oben</p>
+                <p data-i18n="tenorStep5Text2">2. Klicke auf "Einstellungen speichern"</p>
+
                 <div class="warning-box">
-                    <p><strong>⚠️ Wichtig:</strong> Teile deinen API-Schlüssel niemals öffentlich! Schränke ihn auf deine Domain ein.</p>
+                    <p data-i18n="tenorWarning"><strong>⚠️ Wichtig:</strong> Teile deinen API-Schlüssel niemals öffentlich! Schränke ihn auf deine Domain ein.</p>
                 </div>
-                
+
                 <div class="info-box">
-                    <p><strong>💡 Tipp:</strong> Die Tenor API ist für private Nutzung kostenlos. Für kommerzielle Nutzung können Gebühren anfallen.</p>
+                    <p data-i18n="tenorTip"><strong>💡 Tipp:</strong> Die Tenor API ist für private Nutzung kostenlos. Für kommerzielle Nutzung können Gebühren anfallen.</p>
                 </div>
             </div>
         </div>
     </div>
-            <script src="js/confetti.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/confetti.js"></script>
     <script src="js/sound.js"></script>
-        <script src="js/gallery.js"></script>
+    <script src="js/gallery.js"></script>
     <script src="js/drawing.js"></script>
     <script src="js/game.js"></script>
     <script src="js/settings.js"></script>

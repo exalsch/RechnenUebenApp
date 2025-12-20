@@ -1,13 +1,5 @@
 let securityQuestionAnswer;
 
-const securityQuestions = [
-    { question: "Was ist 12 * 4?", answer: 48 },
-    { question: "Was ist 125 / 5?", answer: 25 },
-    { question: "Was ist 3 hoch 2?", answer: 9 },
-    { question: "Was ist 7 * 7 + 4?", answer: 53 },
-    { question: "Was ist 100 - 3 * 3?", answer: 91 }
-];
-
 function updateMaxResultOptions() {
     const operation = document.getElementById('operation').value;
     const maxResultSelect = document.getElementById('maxResult');
@@ -16,12 +8,13 @@ function updateMaxResultOptions() {
 
     maxResultSelect.innerHTML = '';
 
+    const upToLabel = window.i18n ? window.i18n.t('upTo') : 'bis';
     const possibleValues = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 500, 1000];
     possibleValues.forEach(value => {
         if (value >= limits.min && value <= limits.max) {
             const option = document.createElement('option');
             option.value = value;
-            option.textContent = `bis ${value}`;
+            option.textContent = `${upToLabel} ${value}`;
             maxResultSelect.appendChild(option);
         }
     });
@@ -36,7 +29,8 @@ function updateMaxResultOptions() {
 function checkApiKeyWarning() {
     const apiKeyWarning = document.getElementById('api-key-warning');
     if (window.TENOR_API_KEY === 'DUMMY' || !window.TENOR_API_KEY) {
-        apiKeyWarning.innerHTML = 'Hinweis: Für GIF-Belohnungen bitte einen eigenen Tenor API-Schlüssel in den ⚙️-Einstellungen eintragen.';
+        const warningMsg = window.i18n ? window.i18n.t('apiKeyWarning') : 'Hinweis: Für GIF-Belohnungen bitte einen eigenen Tenor API-Schlüssel in den ⚙️-Einstellungen eintragen.';
+        apiKeyWarning.innerHTML = warningMsg;
         apiKeyWarning.classList.remove('hidden');
     } else {
         apiKeyWarning.classList.add('hidden');
@@ -56,10 +50,22 @@ function closeSettingsModal() {
 }
 
 function generateSecurityQuestion() {
-    const randomIndex = Math.floor(Math.random() * securityQuestions.length);
-    const selectedQuestion = securityQuestions[randomIndex];
-    securityQuestionAnswer = selectedQuestion.answer;
-    document.getElementById('security-question').textContent = selectedQuestion.question;
+    if (window.i18n && typeof window.i18n.getRandomSecurityQuestion === 'function') {
+        const q = window.i18n.getRandomSecurityQuestion();
+        securityQuestionAnswer = q.answer;
+        document.getElementById('security-question').textContent = q.question;
+    } else {
+        // Fallback
+        const fallbackQuestions = [
+            { question: "Was ist 12 * 4?", answer: 48 },
+            { question: "Was ist 125 / 5?", answer: 25 },
+            { question: "Was ist 3 hoch 2?", answer: 9 }
+        ];
+        const randomIndex = Math.floor(Math.random() * fallbackQuestions.length);
+        const selectedQuestion = fallbackQuestions[randomIndex];
+        securityQuestionAnswer = selectedQuestion.answer;
+        document.getElementById('security-question').textContent = selectedQuestion.question;
+    }
 }
 
 function checkSecurityAnswer() {
@@ -89,7 +95,8 @@ function checkSecurityAnswer() {
             confettiEndEl.checked = window.confettiEndRound !== false;
         }
     } else {
-        alert('Falsche Antwort. Bitte versuche es erneut.');
+        const msg = window.i18n ? window.i18n.t('wrongAnswer') : 'Falsche Antwort. Bitte versuche es erneut.';
+        alert(msg);
         generateSecurityQuestion();
         document.getElementById('security-answer').value = '';
     }
@@ -107,19 +114,19 @@ function saveSettings() {
     const confettiEndRound = document.getElementById('confetti-end-round')?.checked !== false;
 
     if (!window.TENOR_API_KEY) {
-        alert('Der API Key darf nicht leer sein.');
+        alert(window.i18n ? window.i18n.t('apiKeyEmpty') : 'Der API Key darf nicht leer sein.');
         return;
     }
     if (!queries) {
-        alert('Die Suchbegriffe dürfen nicht leer sein.');
+        alert(window.i18n ? window.i18n.t('searchTermsEmpty') : 'Die Suchbegriffe dürfen nicht leer sein.');
         return;
     }
     if (!gameTime || gameTime < 60 || gameTime > 1800) {
-        alert('Die Spielzeit muss zwischen 60 und 1800 Sekunden liegen.');
+        alert(window.i18n ? window.i18n.t('gameTimeInvalid') : 'Die Spielzeit muss zwischen 60 und 1800 Sekunden liegen.');
         return;
     }
     if (!gifCacheCount || gifCacheCount < 10 || gifCacheCount > 50) {
-        alert('Die Anzahl der vorzuladenden GIFs muss zwischen 10 und 50 liegen.');
+        alert(window.i18n ? window.i18n.t('gifCacheInvalid') : 'Die Anzahl der vorzuladenden GIFs muss zwischen 10 und 50 liegen.');
         return;
     }
 
@@ -151,7 +158,7 @@ function saveSettings() {
         }
     }
 
-    alert('Einstellungen gespeichert!');
+    alert(window.i18n ? window.i18n.t('settingsSaved') : 'Einstellungen gespeichert!');
     closeSettingsModal();
 }
 

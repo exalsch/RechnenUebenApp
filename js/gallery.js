@@ -83,7 +83,8 @@ function displayGalleryPage(page) {
     const paginatedGifs = savedGifs.slice(startIndex, endIndex);
 
     if (savedGifs.length === 0) {
-        galleryContent.innerHTML = '<p>Die Galerie ist leer.</p>';
+        const emptyMsg = window.i18n ? window.i18n.t('galleryEmpty') : 'Die Galerie ist leer.';
+        galleryContent.innerHTML = `<p>${emptyMsg}</p>`;
         paginationControls.classList.add('hidden');
         return;
     } else {
@@ -96,7 +97,7 @@ function displayGalleryPage(page) {
 
         const img = document.createElement('img');
         img.src = gifUrl;
-        img.alt = 'Gespeichertes GIF';
+        img.alt = window.i18n ? window.i18n.t('savedGifAlt') : 'Gespeichertes GIF';
 
         const removeBtn = document.createElement('button');
         removeBtn.className = 'remove-gif-btn';
@@ -110,9 +111,10 @@ function displayGalleryPage(page) {
         copyBtn.textContent = '📋';
         copyBtn.onclick = () => {
             navigator.clipboard.writeText(gifUrl).then(() => {
-                alert('GIF-URL in die Zwischenablage kopiert!');
+                const msg = window.i18n ? window.i18n.t('gifCopied') : 'GIF-URL in die Zwischenablage kopiert!';
+                alert(msg);
             }).catch(err => {
-                console.error('Fehler beim Kopieren der URL: ', err);
+                console.error('Error copying URL: ', err);
             });
         };
 
@@ -123,7 +125,9 @@ function displayGalleryPage(page) {
     });
 
     const totalPages = Math.ceil(savedGifs.length / gifsPerPage);
-    pageInfo.textContent = `Seite ${page} von ${totalPages}`;
+    const pageLabel = window.i18n ? window.i18n.t('pageOf') : 'Seite';
+    const ofLabel = window.i18n ? window.i18n.t('of') : 'von';
+    pageInfo.textContent = `${pageLabel} ${page} ${ofLabel} ${totalPages}`;
 
     const prevPageBtn = document.getElementById('prev-page');
     const nextPageBtn = document.getElementById('next-page');
@@ -133,7 +137,8 @@ function displayGalleryPage(page) {
 
 function exportGallery() {
     if (savedGifs.length === 0) {
-        alert('Die Galerie ist leer. Es gibt nichts zu exportieren.');
+        const msg = window.i18n ? window.i18n.t('galleryEmptyExport') : 'Die Galerie ist leer. Es gibt nichts zu exportieren.';
+        alert(msg);
         return;
     }
     const dataStr = JSON.stringify(savedGifs, null, 2);
@@ -160,19 +165,22 @@ function importGallery(event) {
         try {
             const importedGifs = JSON.parse(e.target.result);
             if (!Array.isArray(importedGifs) || !importedGifs.every(item => typeof item === 'string')) {
-                throw new Error('Ungültiges Dateiformat.');
+                const invalidMsg = window.i18n ? window.i18n.t('invalidFileFormat') : 'Ungültiges Dateiformat.';
+                throw new Error(invalidMsg);
             }
 
             // Merge without duplicates
             const newGifs = importedGifs.filter(gif => !savedGifs.includes(gif));
             savedGifs.push(...newGifs);
             localStorage.setItem('savedGifs', JSON.stringify(savedGifs));
-            alert(`${newGifs.length} neue GIFs wurden zur Galerie hinzugefügt.`);
+            const addedMsg = window.i18n ? window.i18n.t('gifsImported') : 'neue GIFs wurden zur Galerie hinzugefügt.';
+            alert(`${newGifs.length} ${addedMsg}`);
             if (document.getElementById('gallery-modal') && !document.getElementById('gallery-modal').classList.contains('hidden')) {
                 showGallery(); // Refresh gallery view if open
             }
         } catch (error) {
-            alert('Fehler beim Importieren der Datei: ' + error.message);
+            const errorMsg = window.i18n ? window.i18n.t('importError') : 'Fehler beim Importieren der Datei:';
+            alert(`${errorMsg} ${error.message}`);
         }
     };
     reader.readAsText(file);

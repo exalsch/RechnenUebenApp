@@ -1,5 +1,5 @@
-const STATIC_CACHE_NAME = 'rechnen-ueben-app-static-cache-v3';
-const DYNAMIC_CACHE_NAME = 'rechnen-ueben-app-dynamic-cache-v3';
+const STATIC_CACHE_NAME = 'rechnen-ueben-app-static-cache-v4';
+const DYNAMIC_CACHE_NAME = 'rechnen-ueben-app-dynamic-cache-v4';
 
 // Alle statischen Assets, die zum App-Grundgerüst gehören
 // GitHub Pages base path
@@ -10,6 +10,8 @@ const urlsToCache = [
   `${GHPATH}/index.html`,
   `${GHPATH}/style.css`,
   `${GHPATH}/main.js`,
+  `${GHPATH}/js/translations.js`,
+  `${GHPATH}/js/i18n.js`,
   `${GHPATH}/js/sound.js`,
   `${GHPATH}/js/gallery.js`,
   `${GHPATH}/js/drawing.js`,

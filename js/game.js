@@ -17,6 +17,11 @@ const operationLimits = {
 };
 
 function getOperationName(operation) {
+    // Use i18n if available, fallback to hardcoded values
+    if (window.i18n && typeof window.i18n.getOperationName === 'function') {
+        return window.i18n.getOperationName(operation);
+    }
+    // Fallback for when i18n is not loaded
     const operationNames = {
         'addition': 'Addition (ohne Übertrag)',
         'addition-carry': 'Addition (mit Übertrag)',
@@ -60,7 +65,8 @@ function startGame() {
     // Validate selected maxResult against operation limits
     const limits = operationLimits[operation];
     if (window.maxResult < limits.min || window.maxResult > limits.max) {
-        alert(`Für ${getOperationName(operation)} muss die maximale Ergebniszahl zwischen ${limits.min} und ${limits.max} liegen.`);
+        const msg = window.i18n ? window.i18n.t('maxResultError', { operation: getOperationName(operation), min: limits.min, max: limits.max }) : `Für ${getOperationName(operation)} muss die maximale Ergebniszahl zwischen ${limits.min} und ${limits.max} liegen.`;
+        alert(msg);
         window.isStartingGame = false;
         return;
     }
@@ -301,7 +307,8 @@ function checkAnswer() {
     if (userAnswer === window.correctAnswer) {
         window.playSound(window.correctSound);
         window.score++;
-        document.getElementById('score').innerText = `Punkte: ${window.score}`;
+        const pointsLabel = window.i18n ? window.i18n.t('points') : 'Punkte';
+        document.getElementById('score').innerText = `${pointsLabel}: ${window.score}`;
         document.getElementById('answer').classList.add('correct-answer');
         // Fire random confetti cannon on correct answer (if enabled in settings)
         if (window.confettiCorrectAnswer && typeof window.fireRandomConfetti === 'function') {
@@ -336,7 +343,8 @@ function skipQuestion() {
     }
     window.score = Math.max(0, window.score - 1);
     window.playSound(window.wrongSound);
-    document.getElementById('score').innerText = `Punkte: ${window.score}`;
+    const pointsLabel = window.i18n ? window.i18n.t('points') : 'Punkte';
+    document.getElementById('score').innerText = `${pointsLabel}: ${window.score}`;
     generateQuestion(document.getElementById('operation').value);
 }
 
