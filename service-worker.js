@@ -14,6 +14,7 @@ const urlsToCache = [
   `${GHPATH}/js/gallery.js`,
   `${GHPATH}/js/drawing.js`,
   `${GHPATH}/js/game.js`,
+  `${GHPATH}/js/scaffold-wizard.js`,
   `${GHPATH}/js/settings.js`,
   `${GHPATH}/js/scores.js`,
   `${GHPATH}/js/gif.js`,

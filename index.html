@@ -109,6 +109,7 @@
                 <div class="answer-section">
                     <div class="answer-input-group">
                         <input type="text" id="answer" placeholder="Deine Antwort" autocomplete="off">
+                        <button id="scaffold-button" class="scaffold-button" type="button" title="Schritt für Schritt" aria-label="Schritt für Schritt">✨</button>
                         <button id="numpad-toggle" class="numpad-toggle-btn" title="Zahlenfeld ein/aus">⌨️</button>
                         <div class="action-buttons">
                             <button id="skip-question" title="Überspringen (-1 Punkt)">⏭️</button>
@@ -233,6 +234,11 @@
                     <input type="checkbox" id="disable-skip">
                     Skip-Button deaktivieren
                 </label>
+                <br>
+                <label>
+                    <input type="checkbox" id="show-scaffold-wizard" checked>
+                    Schritt-für-Schritt-Button anzeigen
+                </label>
                 <hr>
                 <h3>Aufgabenoptionen</h3>
                 <label>
@@ -314,11 +320,21 @@
             </div>
         </div>
     </div>
+
+    <div id="scaffold-modal" class="modal hidden">
+        <div class="modal-content scaffold-modal-content">
+            <span id="close-scaffold-modal" class="close-button">&times;</span>
+            <h2>Schritt für Schritt</h2>
+            <div id="scaffold-content"></div>
+            <div id="scaffold-error" class="warning hidden"></div>
+        </div>
+    </div>
             <script src="js/confetti.js"></script>
     <script src="js/sound.js"></script>
         <script src="js/gallery.js"></script>
     <script src="js/drawing.js"></script>
     <script src="js/game.js"></script>
+    <script src="js/scaffold-wizard.js"></script>
     <script src="js/settings.js"></script>
     <script src="js/scores.js"></script>
     <script src="js/gif.js"></script>

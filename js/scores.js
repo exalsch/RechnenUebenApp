@@ -5,6 +5,7 @@ function saveScore(scoreOverride) {
     scores.push({
         score: scoreValue,
         maxResult: window.maxResult,
+        scaffoldUsed: !!window.scaffoldUsedThisRound,
         date: new Date().toISOString()
     });
     localStorage.setItem(`scores_${operation}`, JSON.stringify(scores));
@@ -30,7 +31,9 @@ function displayScores() {
         const formattedDate = date.toLocaleDateString('de-DE');
         const formattedTime = date.toLocaleTimeString('de-DE');
         const scoreItem = document.createElement('div');
-        scoreItem.textContent = `${formattedDate} ${formattedTime} - Punkte: ${entry.score} (bis ${entry.maxResult})`;
+        const used = !!entry.scaffoldUsed;
+        const icon = used ? ' ✨' : '';
+        scoreItem.textContent = `${formattedDate} ${formattedTime} - Punkte: ${entry.score} (bis ${entry.maxResult})${icon}`;
         scoreList.appendChild(scoreItem);
     });
 }

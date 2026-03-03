@@ -88,6 +88,10 @@ function checkSecurityAnswer() {
         if (confettiEndEl) {
             confettiEndEl.checked = window.confettiEndRound !== false;
         }
+        const showScaffoldEl = document.getElementById('show-scaffold-wizard');
+        if (showScaffoldEl) {
+            showScaffoldEl.checked = window.showScaffoldWizard !== false;
+        }
     } else {
         alert('Falsche Antwort. Bitte versuche es erneut.');
         generateSecurityQuestion();
@@ -105,6 +109,7 @@ function saveSettings() {
     const excludeOneMultiplication = !!document.getElementById('exclude-one-multiplication')?.checked;
     const confettiCorrectAnswer = document.getElementById('confetti-correct-answer')?.checked !== false;
     const confettiEndRound = document.getElementById('confetti-end-round')?.checked !== false;
+    const showScaffoldWizard = document.getElementById('show-scaffold-wizard')?.checked !== false;
 
     if (!window.TENOR_API_KEY) {
         alert('Der API Key darf nicht leer sein.');
@@ -131,6 +136,7 @@ function saveSettings() {
     window.excludeOneMultiplication = excludeOneMultiplication;
     window.confettiCorrectAnswer = confettiCorrectAnswer;
     window.confettiEndRound = confettiEndRound;
+    window.showScaffoldWizard = showScaffoldWizard;
     localStorage.setItem('playerName', playerName);
     localStorage.setItem('TENOR_API_KEY', window.TENOR_API_KEY);
     localStorage.setItem('gifQueries', window.gifQueries.join(';'));
@@ -140,6 +146,7 @@ function saveSettings() {
     localStorage.setItem('excludeOneMultiplication', excludeOneMultiplication ? '1' : '0');
     localStorage.setItem('confettiCorrectAnswer', confettiCorrectAnswer ? '1' : '0');
     localStorage.setItem('confettiEndRound', confettiEndRound ? '1' : '0');
+    localStorage.setItem('showScaffoldWizard', showScaffoldWizard ? '1' : '0');
 
     // Reflect immediately in UI
     const skipBtn = document.getElementById('skip-question');
@@ -148,6 +155,15 @@ function saveSettings() {
             skipBtn.classList.add('hidden');
         } else {
             skipBtn.classList.remove('hidden');
+        }
+    }
+
+    const scaffoldBtn = document.getElementById('scaffold-button');
+    if (scaffoldBtn) {
+        if (showScaffoldWizard) {
+            scaffoldBtn.classList.remove('hidden');
+        } else {
+            scaffoldBtn.classList.add('hidden');
         }
     }
 

@@ -129,12 +129,22 @@ window.excludeOneMultiplication = (localStorage.getItem('excludeOneMultiplicatio
 // Confetti settings (default to enabled if not set)
 window.confettiCorrectAnswer = localStorage.getItem('confettiCorrectAnswer') !== '0';
 window.confettiEndRound = localStorage.getItem('confettiEndRound') !== '0';
+window.showScaffoldWizard = localStorage.getItem('showScaffoldWizard') !== '0';
 
 // Reflect skip setting immediately on load
 if (window.disableSkip) {
     skipButton.classList.add('hidden');
 } else {
     skipButton.classList.remove('hidden');
+}
+
+const scaffoldButton = document.getElementById('scaffold-button');
+if (scaffoldButton) {
+    if (window.showScaffoldWizard) {
+        scaffoldButton.classList.remove('hidden');
+    } else {
+        scaffoldButton.classList.add('hidden');
+    }
 }
 
 function endGame(isSuccessfulEnd = false) {

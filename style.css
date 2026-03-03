@@ -67,6 +67,23 @@ button:hover {
     margin: 20px 0;
 }
 
+.scaffold-button {
+    background-color: #6f42c1;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.scaffold-button:hover {
+    background-color: #5a34a3;
+}
+
+.scaffold-target-number {
+    color: #0b5ed7;
+    font-weight: bold;
+}
+
 #timer {
     font-size: 20px;
     color: red;
@@ -478,7 +495,7 @@ label {
 
 .modal-content {
     background-color: #fefefe;
-    margin: 10% auto;
+    margin: 3vh auto;
     padding: 20px;
     border: 1px solid #888;
     width: 90%;
@@ -486,6 +503,138 @@ label {
     border-radius: 10px;
     position: relative;
     text-align: left;
+    display: flex;
+    flex-direction: column;
+    max-height: 94vh;
+    overflow: hidden;
+}
+
+.scaffold-modal-content {
+    max-width: 900px;
+}
+
+#scaffold-content {
+    overflow: auto;
+    padding-right: 4px;
+}
+
+.scaffold-section {
+    margin-top: 10px;
+}
+
+.scaffold-step-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.scaffold-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    align-items: center;
+}
+
+.scaffold-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.scaffold-secondary {
+    background-color: #6c757d;
+}
+
+.scaffold-secondary:hover {
+    background-color: #5c636a;
+}
+
+.scaffold-hint {
+    margin-top: 10px;
+    font-size: 0.95em;
+    color: #444;
+}
+
+.scaffold-prompt {
+    font-size: 1.05em;
+    margin: 10px 0;
+}
+
+.scaffold-instruction-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.scaffold-tts-btn {
+    background-color: #6c757d;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 18px;
+    line-height: 1;
+    margin: 0;
+}
+
+.scaffold-tts-btn:hover {
+    background-color: #5c636a;
+}
+
+.scaffold-history {
+    background: #f6f8ff;
+    border: 1px solid #d9e1ff;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.scaffold-history-title {
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.scaffold-history-item {
+    padding: 4px 0;
+    border-top: 1px dashed #d9e1ff;
+}
+
+.scaffold-history-item:first-of-type {
+    border-top: none;
+}
+
+.scaffold-check-btn {
+    background-color: #4CAF50;
+    font-size: 18px;
+    padding: 8px 14px;
+    border-radius: 999px;
+}
+
+.scaffold-check-btn:hover {
+    background-color: #45a049;
+}
+
+.scaffold-branching {
+    display: grid;
+    gap: 10px;
+}
+
+.scaffold-branch-row {
+    display: grid;
+    grid-template-columns: 1fr 170px;
+    gap: 10px;
+    align-items: center;
+}
+
+.scaffold-success {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #e7f7ea;
+    border: 1px solid #ccebd3;
+    color: #1a7f37;
+    font-weight: bold;
+    text-align: center;
 }
 
 /* Prevent background scroll when a modal is open */
@@ -505,6 +654,11 @@ body.no-scroll {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+#settings-modal .modal-content {
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #settings-content hr {

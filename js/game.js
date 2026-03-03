@@ -45,6 +45,9 @@ function startGame() {
     // Reset answer processing guard at the start of each game
     window.isProcessingAnswer = false;
 
+    // Track whether the ScaffoldWizard was used in this round
+    window.scaffoldUsedThisRound = false;
+
     // Reset state for multi-divi mode so that a new round starts with multiplication
     if (operation === 'multi-divi') {
         window.multiDiviNextIsDivision = false;
