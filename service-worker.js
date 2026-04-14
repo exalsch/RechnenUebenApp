@@ -52,10 +52,17 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.filter(cacheName => {
-          // Lösche alle Caches, die mit dem App-Namen beginnen, aber nicht die aktuellen sind
-          return cacheName.startsWith('rechnen-ueben-app-') &&
-                 cacheName !== STATIC_CACHE_NAME &&
-                 cacheName !== DYNAMIC_CACHE_NAME;
+          const isAppCache = cacheName.startsWith('rechnen-ueben-app-');
+          const isCurrentStaticCache = cacheName === STATIC_CACHE_NAME;
+          const isCurrentDynamicCache = cacheName === DYNAMIC_CACHE_NAME;
+          const isLegacyDynamicCache = cacheName.startsWith('rechnen-ueben-app-dynamic-cache-');
+
+          // Keep current caches and all legacy dynamic caches so old GIF URLs
+          // can still be resolved as long as browser cache entries exist.
+          return isAppCache &&
+                 !isCurrentStaticCache &&
+                 !isCurrentDynamicCache &&
+                 !isLegacyDynamicCache;
         }).map(cacheName => {
           return caches.delete(cacheName);
         })

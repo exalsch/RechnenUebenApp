@@ -35,8 +35,8 @@ function updateMaxResultOptions() {
 
 function checkApiKeyWarning() {
     const apiKeyWarning = document.getElementById('api-key-warning');
-    if (window.TENOR_API_KEY === 'DUMMY' || !window.TENOR_API_KEY) {
-        apiKeyWarning.innerHTML = 'Hinweis: Für GIF-Belohnungen bitte einen eigenen Tenor API-Schlüssel in den ⚙️-Einstellungen eintragen.';
+    if (window.GIF_API_KEY === 'DUMMY' || !window.GIF_API_KEY) {
+        apiKeyWarning.innerHTML = 'Hinweis: GIF-Belohnungen laufen jetzt über Klipy. Optional kannst du in den ⚙️-Einstellungen einen API-Schlüssel hinterlegen.';
         apiKeyWarning.classList.remove('hidden');
     } else {
         apiKeyWarning.classList.add('hidden');
@@ -68,7 +68,7 @@ function checkSecurityAnswer() {
         document.getElementById('security-check').classList.add('hidden');
         document.getElementById('settings-content').classList.remove('hidden');
         document.getElementById('player-name').value = window.playerName || 'Schlaubi';
-        document.getElementById('tenor-api-key').value = window.TENOR_API_KEY;
+        document.getElementById('tenor-api-key').value = window.GIF_API_KEY === 'DUMMY' ? '' : window.GIF_API_KEY;
         document.getElementById('gif-queries').value = window.gifQueries.join(';');
         document.getElementById('game-time').value = window.gameTime || 300;
         document.getElementById('gif-cache-count').value = window.gifCacheCount || 20;
@@ -101,7 +101,10 @@ function checkSecurityAnswer() {
 
 function saveSettings() {
     const playerName = document.getElementById('player-name').value.trim();
-    window.TENOR_API_KEY = document.getElementById('tenor-api-key').value.trim();
+    const gifApiKeyInput = document.getElementById('tenor-api-key').value.trim();
+    window.GIF_API_KEY = gifApiKeyInput || 'DUMMY';
+    // Keep old global in sync for backward compatibility.
+    window.TENOR_API_KEY = window.GIF_API_KEY;
     const queries = document.getElementById('gif-queries').value.trim();
     const gameTime = parseInt(document.getElementById('game-time').value);
     const gifCacheCount = parseInt(document.getElementById('gif-cache-count').value);
@@ -111,10 +114,6 @@ function saveSettings() {
     const confettiEndRound = document.getElementById('confetti-end-round')?.checked !== false;
     const showScaffoldWizard = document.getElementById('show-scaffold-wizard')?.checked !== false;
 
-    if (!window.TENOR_API_KEY) {
-        alert('Der API Key darf nicht leer sein.');
-        return;
-    }
     if (!queries) {
         alert('Die Suchbegriffe dürfen nicht leer sein.');
         return;
@@ -138,7 +137,8 @@ function saveSettings() {
     window.confettiEndRound = confettiEndRound;
     window.showScaffoldWizard = showScaffoldWizard;
     localStorage.setItem('playerName', playerName);
-    localStorage.setItem('TENOR_API_KEY', window.TENOR_API_KEY);
+    localStorage.setItem('GIF_API_KEY', window.GIF_API_KEY);
+    localStorage.setItem('TENOR_API_KEY', window.GIF_API_KEY);
     localStorage.setItem('gifQueries', window.gifQueries.join(';'));
     localStorage.setItem('gameTime', gameTime.toString());
     localStorage.setItem('gifCacheCount', gifCacheCount.toString());
@@ -179,7 +179,7 @@ window.generateSecurityQuestion = generateSecurityQuestion;
 window.checkSecurityAnswer = checkSecurityAnswer;
 window.saveSettings = saveSettings;
 
-// Tenor API Help Modal Functions
+// GIF Provider (Klipy) Help Modal Functions
 function showTenorHelp() {
     document.getElementById('tenor-help-modal').classList.remove('hidden');
 }

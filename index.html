@@ -151,6 +151,10 @@
             <div id="result" class="hidden">
                 <h2>Ergebnis</h2>
                 <img id="result-gif" alt="Zufälliges Ende GIF">
+                <p class="gif-attribution" style="font-size: 0.85rem; color: #666; margin-top: 8px;">
+                    GIF-Belohnungen powered by
+                    <a href="https://klipy.com" target="_blank" rel="noopener noreferrer">KLIPY</a>
+                </p>
                 <div id="result-placeholder" class="result-placeholder hidden"></div>
                 <button id="save-gif" class="heart-button">❤️</button>
                 <div id="final-score"></div>
@@ -198,18 +202,22 @@
                 <hr>
                 <div class="api-key-section">
                     <label for="tenor-api-key">
-                        Tenor API Key:
-                        <button type="button" class="help-icon" onclick="showTenorHelp()" title="Hilfe zum Tenor API Key">❓</button>
+                        Klipy API Key (optional):
+                        <button type="button" class="help-icon" onclick="showTenorHelp()" title="Hilfe zum Klipy API Key">❓</button>
                     </label>
-                    <input type="text" id="tenor-api-key" placeholder="Dein TENOR API Key">
+                    <input type="text" id="tenor-api-key" placeholder="Dein Klipy API Key (optional)">
                     <div class="api-links">
-                        <a href="https://console.cloud.google.com/apis/library/tenor.googleapis.com" target="_blank" class="api-link">
-                            🔗 Tenor API aktivieren
+                        <a href="https://klipy.com" target="_blank" class="api-link">
+                            🔗 Klipy öffnen
                         </a>
                     </div>
                 </div>
                 <label for="gif-queries">GIF Suchbegriffe (getrennt durch ;):</label>
                 <input type="text" id="gif-queries" placeholder="z.B. welpe;lustige tiere">
+                <p class="gif-attribution" style="font-size: 0.85rem; color: #666; margin-top: 6px;">
+                    GIF-Suche powered by
+                    <a href="https://klipy.com" target="_blank" rel="noopener noreferrer">KLIPY</a>
+                </p>
                 <hr>
                 <h3>Spielzeit</h3>
                 <label for="game-time">Rundendauer (Sekunden):</label>
@@ -279,43 +287,33 @@
         </div>
     </div>
     
-    <!-- Tenor API Help Modal -->
+    <!-- GIF Provider Help Modal -->
     <div id="tenor-help-modal" class="modal hidden">
         <div class="modal-content">
             <span class="close-button" onclick="closeTenorHelp()">&times;</span>
-            <h2>🎬 Tenor API Key einrichten</h2>
+            <h2> 🎬 Klipy API Key einrichten (optional)</h2>
             <div class="help-content">
-                <h3>Schritt 1: Google Cloud Console</h3>
-                <p>1. Gehe zur <a href="https://console.cloud.google.com/apis/library/tenor.googleapis.com" target="_blank">Google Cloud Console</a></p>
-                <p>2. Melde dich mit deinem Google-Konto an</p>
-                <p>3. Erstelle ein neues Projekt oder wähle ein bestehendes aus</p>
-                
-                <h3>Schritt 2: Tenor API aktivieren</h3>
-                <p>1. Klicke auf "Aktivieren" für die Tenor API</p>
-                <p>2. Warte, bis die Aktivierung abgeschlossen ist</p>
-                
-                <h3>Schritt 3: API-Schlüssel erstellen</h3>
-                <p>1. Gehe zu "APIs & Services" → "Anmeldedaten"</p>
-                <p>2. Klicke auf "+ Anmeldedaten erstellen"</p>
-                <p>3. Wähle "API-Schlüssel" aus</p>
-                <p>4. Kopiere den generierten Schlüssel</p>
-                
-                <h3>Schritt 4: API-Schlüssel einschränken (empfohlen)</h3>
-                <p>1. Klicke auf "Schlüssel einschränken"</p>
-                <p>2. Wähle "HTTP-Verweis (Websites)" aus</p>
-                <p>3. Füge deine Domain hinzu (z.B. example.com/*)</p>
-                <p>4. Unter "API-Einschränkungen" wähle "Tenor API" aus</p>
-                
-                <h3>Schritt 5: Schlüssel einsetzen</h3>
-                <p>1. Kopiere den API-Schlüssel in das Feld oben</p>
+                <h3>Schritt 1: Klipy-Konto öffnen</h3>
+                <p>1. Gehe zu <a href="https://klipy.com" target="_blank">klipy.com</a></p>
+                <p>2. Melde dich an und öffne den Bereich für API-Zugriff</p>
+
+                <h3>Schritt 2: API-Schlüssel erstellen</h3>
+                <p>1. Erstelle einen neuen API-Schlüssel</p>
+                <p>2. Kopiere den Schlüssel</p>
+
+                <h3>Schritt 3: Schlüssel in der App eintragen</h3>
+                <p>1. Füge den Schlüssel oben im Feld ein</p>
                 <p>2. Klicke auf "Einstellungen speichern"</p>
-                
+
+                <h3>Hinweis</h3>
+                <p>Die App funktioniert auch ohne eigenen Schlüssel mit Standard-Einstellungen.</p>
+
                 <div class="warning-box">
                     <p><strong>⚠️ Wichtig:</strong> Teile deinen API-Schlüssel niemals öffentlich! Schränke ihn auf deine Domain ein.</p>
                 </div>
-                
+
                 <div class="info-box">
-                    <p><strong>💡 Tipp:</strong> Die Tenor API ist für private Nutzung kostenlos. Für kommerzielle Nutzung können Gebühren anfallen.</p>
+                    <p><strong>💡 Tipp:</strong> Prüfe in der Klipy-Dokumentation Limits und Preise deines Kontos.</p>
                 </div>
             </div>
         </div>

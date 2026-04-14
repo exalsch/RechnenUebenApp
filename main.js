@@ -120,7 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Load settings from localStorage or use defaults
 window.playerName = localStorage.getItem('playerName') || ''; // Player name
-window.TENOR_API_KEY = localStorage.getItem('TENOR_API_KEY') || 'DUMMY'; // Default Key
+window.GIF_API_KEY = localStorage.getItem('GIF_API_KEY') || localStorage.getItem('TENOR_API_KEY') || 'DUMMY';
+window.TENOR_API_KEY = window.GIF_API_KEY; // Backward compatibility alias
 window.gifQueries = (localStorage.getItem('gifQueries') || "welpe;niedliche tiere;lustige tiere;Fohlen").split(';');
 window.gameTime = parseInt(localStorage.getItem('gameTime')) || 300; // Default 5 minutes
 window.gifCacheCount = parseInt(localStorage.getItem('gifCacheCount')) || 20; // Default 20 GIFs

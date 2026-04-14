@@ -44,10 +44,55 @@ const paginationControls = document.getElementById('pagination-controls');
 let savedGifs = JSON.parse(localStorage.getItem('savedGifs') || '[]');
 let currentPage = 1;
 const gifsPerPage = 20;
+let activeGalleryObjectUrls = [];
+
+function getCanonicalGifUrlFromResultImage() {
+    const resultGif = document.getElementById('result-gif');
+    if (!resultGif) {
+        return '';
+    }
+
+    return resultGif.dataset.originalGifUrl || resultGif.src || '';
+}
+
+function revokeGalleryObjectUrls() {
+    for (const objectUrl of activeGalleryObjectUrls) {
+        try {
+            URL.revokeObjectURL(objectUrl);
+        } catch (_) {
+            // Ignore revoke errors.
+        }
+    }
+    activeGalleryObjectUrls = [];
+}
+
+function tryRenderGifFromCache(imgEl, sourceUrl) {
+    if (!sourceUrl || typeof window.resolveCachedGifDisplayUrl !== 'function') {
+        return;
+    }
+
+    if (!/^https?:\/\//i.test(sourceUrl)) {
+        return;
+    }
+
+    window.resolveCachedGifDisplayUrl(sourceUrl).then(cachedDisplayUrl => {
+        if (!cachedDisplayUrl) {
+            return;
+        }
+
+        imgEl.src = cachedDisplayUrl;
+        activeGalleryObjectUrls.push(cachedDisplayUrl);
+    }).catch(error => {
+        console.error('Failed to resolve cached gallery GIF:', error);
+    });
+}
 
 function saveGif() {
     const saveGifButton = document.getElementById('save-gif');
-    const currentGif = document.getElementById('result-gif').src;
+    const currentGif = getCanonicalGifUrlFromResultImage();
+    if (!currentGif) {
+        return;
+    }
     
     if (!savedGifs.includes(currentGif)) {
         savedGifs.push(currentGif);
@@ -77,6 +122,7 @@ function showGallery() {
 }
 
 function displayGalleryPage(page) {
+    revokeGalleryObjectUrls();
     galleryContent.innerHTML = '';
     const startIndex = (page - 1) * gifsPerPage;
     const endIndex = startIndex + gifsPerPage;
@@ -97,6 +143,7 @@ function displayGalleryPage(page) {
         const img = document.createElement('img');
         img.src = gifUrl;
         img.alt = 'Gespeichertes GIF';
+        tryRenderGifFromCache(img, gifUrl);
 
         const removeBtn = document.createElement('button');
         removeBtn.className = 'remove-gif-btn';
@@ -187,7 +234,7 @@ window.showSaveGifButton = function() {
         saveGifButton.style.display = '';
         
         // Check if current GIF is already saved
-        const currentGif = document.getElementById('result-gif').src;
+        const currentGif = getCanonicalGifUrlFromResultImage();
         if (savedGifs.includes(currentGif)) {
             saveGifButton.classList.add('saved');
         } else {
